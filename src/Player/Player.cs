@@ -1,11 +1,23 @@
 public class Player
 {
-  public string playerName = "Stepper";
+  string playerName = "Stepper";
+  int playerHealth = 10;
+  int playerStepLength = 1;
+  int walkedDistance = 0;
 
-  public int playerHealth = 10;
-  public int playerStepLength = 1;
+  public int GetPlayerHealth()
+  {
+    return playerHealth;
+  }
 
+  public string GetPlayerName()
+  {
+    return playerName;
+  }
 
-
+  public int GetWalkDistance()
+  {
+    return walkedDistance;
+  }
 
 }
