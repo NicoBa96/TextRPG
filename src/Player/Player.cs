@@ -7,17 +7,17 @@ public class Player
 
   public int GetHealth()
   {
-    return playerHealth;
+    return health;
   }
 
   public string GetName()
   {
-    return playerName;
+    return name;
   }
 
-  public int GetDistance()
+  public int GetWalkedSteps()
   {
-    return walkedDistance;
+    return walkedSteps;
   }
 
 }

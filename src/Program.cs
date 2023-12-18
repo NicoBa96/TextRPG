@@ -44,7 +44,7 @@ public class TextRPG
   {
     Player currentPlayer = new Player();
     Console.WriteLine(">>Game starts<<");
-    Console.WriteLine("Name: " + currentPlayer.GetPlayerName() + ", starting Health: " + currentPlayer.GetPlayerHealth() + ", walked distance: " + currentPlayer.GetWalkDistance() + ".");
+    Console.WriteLine("Name: " + currentPlayer.GetName() + ", starting Health: " + currentPlayer.GetHealth() + ", walked distance: " + currentPlayer.GetWalkedSteps() + ".");
   }
 
   void Exit()
