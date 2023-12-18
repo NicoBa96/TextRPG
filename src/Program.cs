@@ -44,7 +44,7 @@ public class TextRPG
   {
     Player currentPlayer = new Player();
     Console.WriteLine(">>Game starts<<");
-    Console.WriteLine("Name: " + currentPlayer.playerName + ", starting Health: " + currentPlayer.playerHealth + ", step length: " + currentPlayer.playerStepLength + ".");
+    Console.WriteLine("Name: " + currentPlayer.GetName() + ", starting Health: " + currentPlayer.GetHealth() + ", walked distance: " + currentPlayer.GetWalkedSteps() + ".");
   }
 
   void Exit()
@@ -57,7 +57,6 @@ public class TextRPG
     Console.WriteLine("Credits");
     Console.WriteLine("Lead Developer: Nico B.");
     Console.WriteLine("Assistant: Joshua S.");
-    Console.WriteLine("Test 123");
     Console.WriteLine("");
   }
 }
