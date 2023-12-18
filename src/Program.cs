@@ -57,7 +57,6 @@ public class TextRPG
     Console.WriteLine("Credits");
     Console.WriteLine("Lead Developer: Nico B.");
     Console.WriteLine("Assistant: Joshua S.");
-    Console.WriteLine("Test 123");
     Console.WriteLine("");
   }
 }
