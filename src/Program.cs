@@ -9,7 +9,7 @@ public class TextRPG
     while (true)
     {
       game.ShowMenu();
-      string startInput = Console.ReadLine();
+      string startInput = Console.ReadLine()!;
       if (startInput == "1")
       {
         game.Start();
