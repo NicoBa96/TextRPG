@@ -1,15 +1,18 @@
 public class Edge
 {
-    Node a;
-    Node b;
+    public Node startNode;
+    public Node destinationNode;
 
-    bool biDirectional;
+    public bool biDirectional;
 
-    public Edge(Node a, Node b, bool directional)
+    public int stepValue;
+
+    public Edge(Node startNode, Node destinationNode, bool directional, int stepValue)
     {
-     this.a = a;
-     this.b = b;
-     biDirectional = directional;
+        this.startNode = startNode;
+        this.destinationNode = destinationNode;
+        biDirectional = directional;
+        this.stepValue = stepValue;
     }
 
 

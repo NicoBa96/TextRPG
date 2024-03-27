@@ -1,15 +1,15 @@
+using System.Drawing;
 using System.Text;
 
 public class TextRPG
 {
+    Map map;
+    Player player;
 
-    LinkedList<Node> map;
-    LinkedList<Edge> edges;
     public TextRPG()
     {
-        map = new LinkedList<Node>();
-        edges = new LinkedList<Edge>();
-        CreateMap();
+        map = new Map();
+        player = new Player();
     }
 
 
@@ -23,11 +23,41 @@ public class TextRPG
         Console.WriteLine(stringBuilder.ToString());
     }
 
+    public void InGameMenu()
+    {
+        Console.WriteLine("Walked distance: " + player.GetWalkedSteps() + " , location: " + map.currentNode.name + ".");
+        StringBuilder stringBuilder = new StringBuilder();
+        List<Edge> paths = map.GetPaths();
+        stringBuilder.AppendLine("Your possible destinations:");
+        for (int i = 0; i < paths.Count; i++)
+        {
+            Edge currentEdge = paths.ElementAt(i);
+            Node targetNode = currentEdge.destinationNode == map.currentNode ? currentEdge.startNode : currentEdge.destinationNode;
+            stringBuilder.AppendLine("(" + (i + 1) + "): " + targetNode.name + ", Steps: " + currentEdge.stepValue);
+        }
+        stringBuilder.Append("Choose your destination by typing the corresponding number:");
+        Console.WriteLine(stringBuilder.ToString());
+    }
+
     public void Start()
     {
-        Player currentPlayer = new Player();
         Console.WriteLine(">>Game starts<<");
-        Console.WriteLine("Name: " + currentPlayer.GetName() + ", starting Health: " + currentPlayer.GetHealth() + ", walked distance: " + currentPlayer.GetWalkedSteps() + ".");
+        Console.WriteLine("Name: " + player.GetName() + ", starting Health: " + player.GetHealth() + ".");
+
+        while (true)
+        {
+            List<Edge> paths = map.GetPaths();
+            int input = Program.GetUserInput(1, paths.Count, this.InGameMenu);
+            Edge chosenEdge = paths.ElementAt(input - 1);
+            player.AddSteps(chosenEdge.stepValue);
+            map.currentNode = chosenEdge.destinationNode == map.currentNode ? chosenEdge.startNode : chosenEdge.destinationNode;
+            StringBuilder destinationStringBuilder = new StringBuilder();
+            destinationStringBuilder.AppendLine(map.currentNode.name);
+            destinationStringBuilder.AppendLine(map.currentNode.description);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(destinationStringBuilder.ToString());
+            Console.ResetColor();
+        }
     }
 
     public void Exit()
@@ -41,34 +71,6 @@ public class TextRPG
         Console.WriteLine("Lead Developer: Nico B.");
         Console.WriteLine("Assistant: Joshua S.");
         Console.WriteLine("");
-    }
-
-    public void CreateMap()
-    {
-        Node cityCentre = CreateNode("cityCentre", "The main square of a large city");
-        Node forest = CreateNode("Forest", "A dark forest filled with trees");
-        Node mountains = CreateNode("Mountains", "Large mountain peaks with a cold climate surrounding them");
-        Node coast = CreateNode("Coast", "Vast coastline seperating the land from the endless sea");
-
-        CreatEdge(cityCentre, forest, true);
-        CreatEdge(cityCentre, mountains, false);
-        CreatEdge(cityCentre, coast, false);
-        CreatEdge(forest, mountains, true);
-        CreatEdge(forest, coast, false);
-        CreatEdge(mountains, coast, true);
-    }
-
-    public Node CreateNode(string name, string description)
-    {
-        Node node = new Node(name, description);
-        map.Append(node);
-        return node;
-    }
-
-    public void CreatEdge(Node a, Node b, bool biDirectional)
-    {
-        Edge edge = new Edge(a, b, biDirectional);
-        edges.Append(edge);
     }
 
 }

@@ -9,18 +9,18 @@ public class Program
 
     while (true)
     {
-      game.ShowMenu();
-      string startInput = Console.ReadLine()!;
-      if (startInput == "1")
+      int startInput = GetUserInput(1, 3, game.ShowMenu);
+      if (startInput == 1)
       {
         game.Start();
+
         game.Exit();
       }
-      else if (startInput == "2")
+      else if (startInput == 2)
       {
         game.ShowCredits();
       }
-      else if (startInput == "3")
+      else if (startInput == 3)
       {
         game.Exit();
       }
@@ -30,4 +30,31 @@ public class Program
       }
     }
   }
+
+  public delegate void ShowMenu();
+
+  public static int GetUserInput(int min, int max, ShowMenu callback)
+  {
+    while (true)
+    {
+      callback.Invoke();
+      string userInput = Console.ReadLine()!;
+      try
+      {
+        int choice = Int32.Parse(userInput);
+        if (choice >= min && choice <= max)
+        {
+          return choice;
+        }
+        throw new Exception();
+      }
+      catch (System.Exception)
+      {
+
+        Console.WriteLine("Invalid Input! Try again.");
+      }
+    }
+  }
+
+
 }

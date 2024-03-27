@@ -5,6 +5,7 @@ public class Player
   int stepFactor = 1;
   int walkedSteps = 0;
 
+
   public int GetHealth()
   {
     return health;
@@ -18,6 +19,11 @@ public class Player
   public int GetWalkedSteps()
   {
     return walkedSteps;
+  }
+
+  public void AddSteps(int stepAmount)
+  {
+    walkedSteps += stepAmount;
   }
 
 }

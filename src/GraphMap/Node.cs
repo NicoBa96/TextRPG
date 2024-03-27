@@ -1,9 +1,9 @@
 public class Node
 {
 
-    string name;
+    public string name;
 
-    string description;
+    public string description;
 
     public Node(string nodeName, string descriptionText)
     {
