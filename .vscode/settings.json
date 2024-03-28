@@ -1,7 +1,3 @@
 {
     "dotnet.defaultSolution": "TextRPG Step.sln",
-    "debug.console.fontFamily": "Noto Sans Mono",
-    "debug.console.fontSize": 15,
-    "debug.console.lineHeight": 21,
-    "debug.console.collapseIdenticalLines": false
 }

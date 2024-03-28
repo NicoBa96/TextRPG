@@ -197,13 +197,17 @@ public class Map
                 Console.ResetColor();
             }
 
-            if (y == 0)
+            if (y == 1)
             {
                 Console.Write(" Legende");
             }
-            else if (y <= nodes.Count)
+            else if (y == 2)
             {
-                DrawLegendEntry(nodes[y - 1]);
+                Console.Write(" --------");
+            }
+            else if (y > 2 && y <= nodes.Count + 2)
+            {
+                DrawLegendEntry(nodes[y - 3]);
             }
 
             Console.WriteLine();
@@ -212,7 +216,7 @@ public class Map
 
     private void DrawLegendEntry(Node node)
     {
-        Console.Write(" ");
+        Console.Write("");
         Console.ForegroundColor = node.color;
         Console.Write(LOCATION_SYMBOL);
         Console.ResetColor();
