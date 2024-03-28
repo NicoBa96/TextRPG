@@ -1,25 +1,52 @@
+using System.Drawing;
+using System.Numerics;
+using System.Text;
+using System.Xml.Schema;
+
 public class Map
 {
+    private const ConsoleColor EMPTY_COLOR = ConsoleColor.Black;
+    private const string EMPTY_SYMBOL = " \u25FC";
+    private const ConsoleColor BORDER_COLOR = ConsoleColor.White;
+    private const string BORDER_SYMBOL = " \u25AA";
+    private const string LOCATION_SYMBOL = " \u25C8";
+    private const ConsoleColor WAY_COLOR = ConsoleColor.DarkYellow;
+    private const string WAY_SYMBOL = " \u25AA";
 
-    List<Node> map;
+    List<Node> nodes;
     List<Edge> edges;
 
     public Node currentNode;
 
+    private Vector2 mapSize;
+
+    /// <summary>
+    /// Contains the symbol and color at a certain position.
+    /// </summary>
+    private Tuple<string, ConsoleColor>[,] mapSymbols;
 
     public Map()
     {
-        map = new List<Node>();
+        nodes = new List<Node>();
         edges = new List<Edge>();
         CreateMap();
+
+        // setup data to draw the map
+        mapSize = determineMapBoundaries();
+
+        Console.WriteLine(mapSize.X);
+        Console.WriteLine(mapSize.Y);
+
+        mapSymbols = new Tuple<string, ConsoleColor>[(int)mapSize.X, (int)mapSize.Y];
+        fillMapSymbols();
     }
 
     public void CreateMap()
     {
-        Node cityCentre = CreateNode("cityCentre", "The main square of a large city");
-        Node forest = CreateNode("Forest", "A dark forest filled with trees");
-        Node mountains = CreateNode("Mountains", "Large mountain peaks with a cold climate surrounding them");
-        Node coast = CreateNode("Coast", "Vast coastline seperating the land from the endless sea");
+        Node cityCentre = CreateNode(10, 10, ConsoleColor.Blue, "cityCentre", "The main square of a large city");
+        Node forest = CreateNode(16, 4, ConsoleColor.Green, "Forest", "A dark forest filled with trees");
+        Node mountains = CreateNode(2, 2, ConsoleColor.Gray, "Mountains", "Large mountain peaks with a cold climate surrounding them");
+        Node coast = CreateNode(12, 20, ConsoleColor.Yellow, "Coast", "Vast coastline seperating the land from the endless sea");
 
         currentNode = cityCentre;
 
@@ -27,14 +54,14 @@ public class Map
         CreatEdge(cityCentre, mountains, false, 30);
         CreatEdge(cityCentre, coast, false, 60);
         CreatEdge(forest, mountains, true, 20);
-        CreatEdge(forest, coast, false, 50);
+        CreatEdge(coast, forest, true, 50);
         CreatEdge(mountains, coast, true, 30);
     }
 
-    public Node CreateNode(string name, string description)
+    public Node CreateNode(int xPos, int yPos, ConsoleColor color, string name, string description)
     {
-        Node node = new Node(name, description);
-        map.Add(node);
+        Node node = new Node(xPos, yPos, color, name, description);
+        nodes.Add(node);
         return node;
     }
 
@@ -51,11 +78,145 @@ public class Map
         {
             if (edge.startNode == currentNode || (edge.destinationNode == currentNode && edge.biDirectional))
             {
-              paths.Add(edge);
+                paths.Add(edge);
             }
 
         }
         return paths;
     }
 
+    /// <summary>
+    /// This function is responsible to caluclate the boundaries of the map according to the given nodes and their positions.
+    /// 
+    /// The map is always a little bit bigger than the actual nodes.
+    /// </summary>
+    /// <returns></returns>
+    private Vector2 determineMapBoundaries()
+    {
+        if (nodes == null) return new Vector2(0, 0);
+
+        int maxX = nodes.Max(node => node.xPos);
+        int maxY = nodes.Max(node => node.yPos);
+
+        return new Vector2(maxX + 5, maxY + 5);
+    }
+
+    /// <summary>
+    /// This function fills the double array with their according symbols.
+    /// </summary>
+    private void fillMapSymbols()
+    {
+
+        for (int y = 0; y < mapSize.Y; y++)
+        {
+            for (int x = 0; x < mapSize.X; x++)
+            {
+                if (y == 0 || y == mapSize.Y - 1 || x == 0 || x == mapSize.X - 1)
+                {
+                    mapSymbols[x, y] = new Tuple<string, ConsoleColor>(BORDER_SYMBOL, BORDER_COLOR);
+                }
+                else
+                {
+                    mapSymbols[x, y] = new Tuple<string, ConsoleColor>(EMPTY_SYMBOL, EMPTY_COLOR);
+                }
+            }
+        }
+
+        // Add paths
+        foreach (Edge edge in edges)
+        {
+            // Draw path
+            int fromX = edge.startNode.xPos;
+            int toX = edge.destinationNode.xPos;
+            int fromY = edge.startNode.yPos;
+            int toY = edge.destinationNode.yPos;
+
+            // multiple cases
+            int distanceX = Math.Abs(fromX - toX);
+            int distanceY = Math.Abs(fromY - toY);
+
+            // number of diagonal steps
+            int diagonalWays = Math.Min(distanceX, distanceY);
+
+            // number of linear steps
+            int linearSteps = Math.Max(distanceX, distanceY) - diagonalWays;
+
+            int currentX = fromX;
+            int currentY = fromY;
+            for (int i = 0; i < diagonalWays; i++)
+            {
+                currentX = fromX < toX ? currentX + 1 : currentX - 1;
+                currentY = fromY < toY ? currentY + 1 : currentY - 1;
+                mapSymbols[currentX, currentY] = new Tuple<string, ConsoleColor>(WAY_SYMBOL, WAY_COLOR);
+            }
+
+            for (int i = 0; i < linearSteps; i++)
+            {
+                if (currentX == toX)
+                {
+                    // make vertical
+                    currentY = fromY < toY ? currentY + 1 : currentY - 1;
+                }
+                else if (currentY == toY)
+                {
+                    // make horizontal
+                    currentX = fromX < toX ? currentX + 1 : currentX - 1;
+                }
+                mapSymbols[currentX, currentY] = new Tuple<string, ConsoleColor>(WAY_SYMBOL, WAY_COLOR);
+            }
+        }
+
+        // Add locations
+        foreach (Node node in nodes)
+        {
+            mapSymbols[node.xPos, node.yPos] = new Tuple<string, ConsoleColor>(LOCATION_SYMBOL, node.color);
+        }
+    }
+
+    /// <summary>
+    ///  Draws the map.
+    /// </summary>
+    public void DrawMap()
+    {
+        for (int y = 0; y < mapSize.Y; y++)
+        {
+            for (int x = 0; x < mapSize.X; x++)
+            {
+                Tuple<string, ConsoleColor> value = mapSymbols[x, y];
+                Console.ForegroundColor = value.Item2;
+
+                if (string.IsNullOrEmpty(value.Item1))
+                {
+                    Console.Write(EMPTY_SYMBOL);
+                }
+                else
+                {
+                    Console.Write(value.Item1);
+                }
+
+                Console.ResetColor();
+            }
+
+            if (y == 0)
+            {
+                Console.Write(" Legende");
+            }
+            else if (y <= nodes.Count)
+            {
+                DrawLegendEntry(nodes[y - 1]);
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+    private void DrawLegendEntry(Node node)
+    {
+        Console.Write(" ");
+        Console.ForegroundColor = node.color;
+        Console.Write(LOCATION_SYMBOL);
+        Console.ResetColor();
+        Console.Write(" ");
+        Console.Write(node.name);
+    }
 }

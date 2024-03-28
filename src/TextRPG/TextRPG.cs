@@ -37,6 +37,7 @@ public class TextRPG
         }
         stringBuilder.Append("Choose your destination by typing the corresponding number:");
         Console.WriteLine(stringBuilder.ToString());
+        map.DrawMap();
     }
 
     public void Start()
