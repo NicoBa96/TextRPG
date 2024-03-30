@@ -12,6 +12,15 @@ public class Map
     private const string LOCATION_SYMBOL = " \u25C8";
     private const ConsoleColor WAY_COLOR = ConsoleColor.DarkYellow;
     private const string WAY_SYMBOL = " \u25AA";
+    private const string DIRECTION_SYMBOL_UP = " \u2B61";
+    private const string DIRECTION_SYMBOL_UPRIGHT = " \u2B67";
+    private const string DIRECTION_SYMBOL_RIGHT = " \u2B62";
+    private const string DIRECTION_SYMBOL_DOWNRIGHT = " \u2B68";
+    private const string DIRECTION_SYMBOL_DOWN = " \u2B63";
+    private const string DIRECTION_SYMBOL_DOWNLEFT = " \u2B69";
+    private const string DIRECTION_SYMBOL_LEFT = " \u2B60";
+    private const string DIRECTION_SYMBOL_UPLEFT = " \u2B66";
+
 
     List<Node> nodes;
     List<Edge> edges;
@@ -34,19 +43,16 @@ public class Map
         // setup data to draw the map
         mapSize = determineMapBoundaries();
 
-        Console.WriteLine(mapSize.X);
-        Console.WriteLine(mapSize.Y);
-
         mapSymbols = new Tuple<string, ConsoleColor>[(int)mapSize.X, (int)mapSize.Y];
         fillMapSymbols();
     }
 
     public void CreateMap()
     {
-        Node cityCentre = CreateNode(10, 10, ConsoleColor.Blue, "cityCentre", "The main square of a large city");
+        Node cityCentre = CreateNode(12, 12, ConsoleColor.Blue, "cityCentre", "The main square of a large city");
         Node forest = CreateNode(16, 4, ConsoleColor.Green, "Forest", "A dark forest filled with trees");
         Node mountains = CreateNode(2, 2, ConsoleColor.Gray, "Mountains", "Large mountain peaks with a cold climate surrounding them");
-        Node coast = CreateNode(12, 20, ConsoleColor.Yellow, "Coast", "Vast coastline seperating the land from the endless sea");
+        Node coast = CreateNode(9, 20, ConsoleColor.Yellow, "Coast", "Vast coastline seperating the land from the endless sea");
 
         currentNode = cityCentre;
 
@@ -147,7 +153,13 @@ public class Map
             {
                 currentX = fromX < toX ? currentX + 1 : currentX - 1;
                 currentY = fromY < toY ? currentY + 1 : currentY - 1;
-                mapSymbols[currentX, currentY] = new Tuple<string, ConsoleColor>(WAY_SYMBOL, WAY_COLOR);
+                string currentSymbol = IsAdjacent(toX, toY, currentX, currentY);
+                if (!string.IsNullOrEmpty(currentSymbol))
+                {
+                    mapSymbols[currentX, currentY] = new Tuple<string, ConsoleColor>(currentSymbol, WAY_COLOR);
+                    continue;
+                }
+                PlaceWay(currentX, currentY);
             }
 
             for (int i = 0; i < linearSteps; i++)
@@ -162,8 +174,18 @@ public class Map
                     // make horizontal
                     currentX = fromX < toX ? currentX + 1 : currentX - 1;
                 }
-                mapSymbols[currentX, currentY] = new Tuple<string, ConsoleColor>(WAY_SYMBOL, WAY_COLOR);
+
+                string currentSymbol = IsAdjacent(toX, toY, currentX, currentY);
+                if (!string.IsNullOrEmpty(currentSymbol))
+                {
+                    mapSymbols[currentX, currentY] = new Tuple<string, ConsoleColor>(currentSymbol, WAY_COLOR);
+                    continue;
+                }
+
+                PlaceWay(currentX, currentY);
             }
+
+
         }
 
         // Add locations
@@ -185,14 +207,7 @@ public class Map
                 Tuple<string, ConsoleColor> value = mapSymbols[x, y];
                 Console.ForegroundColor = value.Item2;
 
-                if (string.IsNullOrEmpty(value.Item1))
-                {
-                    Console.Write(EMPTY_SYMBOL);
-                }
-                else
-                {
-                    Console.Write(value.Item1);
-                }
+                Console.Write(value.Item1);
 
                 Console.ResetColor();
             }
@@ -222,5 +237,53 @@ public class Map
         Console.ResetColor();
         Console.Write(" ");
         Console.Write(node.name);
+    }
+
+    private void PlaceWay(int x, int y)
+    {
+        if (mapSymbols[x, y].Item1 == EMPTY_SYMBOL)
+        {
+            mapSymbols[x, y] = new Tuple<string, ConsoleColor>(WAY_SYMBOL, WAY_COLOR);
+        }
+    }
+
+    private string IsAdjacent(int pointX, int pointY, int nebX, int nebY)
+    {
+        if (nebX == pointX && nebY == pointY - 1)
+        {
+            return DIRECTION_SYMBOL_DOWN;
+        }
+        else if (nebX == pointX && nebY == pointY + 1)
+        {
+            return DIRECTION_SYMBOL_UP;
+        }
+        else if (nebX == pointX + 1 && nebY == pointY)
+        {
+            return DIRECTION_SYMBOL_LEFT;
+        }
+        else if (nebX == pointX - 1 && nebY == pointY)
+        {
+            return DIRECTION_SYMBOL_RIGHT;
+        }
+        else if (nebX == pointX + 1 && nebY == pointY + 1)
+        {
+            return DIRECTION_SYMBOL_UPLEFT;
+        }
+        else if (nebX == pointX + 1 && nebY == pointY - 1)
+        {
+            return DIRECTION_SYMBOL_DOWNLEFT;
+        }
+        else if (nebX == pointX - 1 && nebY == pointY + 1)
+        {
+            return DIRECTION_SYMBOL_UPRIGHT;
+        }
+        else if (nebX == pointX + 1 && nebY == pointY + 1)
+        {
+            return DIRECTION_SYMBOL_DOWNRIGHT;
+        }
+        else
+        {
+            return string.Empty;
+        }
     }
 }

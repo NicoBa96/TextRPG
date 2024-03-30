@@ -5,6 +5,7 @@ public class Program
 {
   public static void Main(string[] args)
   {
+    Console.OutputEncoding = Encoding.UTF8;
     TextRPG game = new TextRPG();
 
     while (true)
