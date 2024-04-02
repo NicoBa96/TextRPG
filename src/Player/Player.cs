@@ -2,7 +2,7 @@ public class Player
 {
   string name = "Stepper";
   int health = 10;
-  int stepFactor = 1;
+  float stepFactor = 1;
   int walkedSteps = 0;
 
 
@@ -21,9 +21,11 @@ public class Player
     return walkedSteps;
   }
 
-  public void AddSteps(int stepAmount)
+  public int AddSteps(int stepAmount)
   {
-    walkedSteps += stepAmount;
+    int newSteps = (int)(stepAmount*stepFactor);
+    walkedSteps += newSteps;
+    return newSteps;
   }
 
 }

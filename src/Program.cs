@@ -10,7 +10,7 @@ public class Program
 
     while (true)
     {
-      int startInput =  GetUserInput(1, 3, game.ShowMenu);
+      int startInput = GetUserInput(1, 4, game.ShowMenu);
       if (startInput == 1)
       {
         game.Start();
@@ -24,6 +24,12 @@ public class Program
       else if (startInput == 3)
       {
         game.Exit();
+      }
+      else if (startInput == 4)
+      {
+        MarathonEvent marathon = new MarathonEvent();
+        marathon.Setup(game.player);
+        marathon.Action();
       }
       else
       {

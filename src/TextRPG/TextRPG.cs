@@ -4,7 +4,7 @@ using System.Text;
 public class TextRPG
 {
     GameMap map;
-    Player player;
+    public Player player;
 
     public TextRPG()
     {
