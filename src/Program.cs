@@ -10,7 +10,7 @@ public class Program
 
     while (true)
     {
-      int startInput = 1;//todo change back GetUserInput(1, 3, game.ShowMenu);
+      int startInput =  GetUserInput(1, 3, game.ShowMenu);
       if (startInput == 1)
       {
         game.Start();

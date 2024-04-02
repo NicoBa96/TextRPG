@@ -1,4 +1,4 @@
-public class Node
+public class Location
 {
 
     public string name;
@@ -8,14 +8,14 @@ public class Node
     public int xPos;
     public int yPos;
 
-    public Node(int xPos, int yPos, ConsoleColor color, string nodeName, string descriptionText)
+    public Location(int xPos, int yPos, ConsoleColor color, string name, string description)
     {
-        name = nodeName;
-        description = descriptionText;
+        this.name = name;
+        this.description = description;
         this.xPos = xPos;
         this.yPos = yPos;
         this.color = color;
     }
 
-    
+
 }

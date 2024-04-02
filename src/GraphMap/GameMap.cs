@@ -1,9 +1,6 @@
-using System.Drawing;
 using System.Numerics;
-using System.Text;
-using System.Xml.Schema;
 
-public class Map
+public class GameMap
 {
     private const ConsoleColor EMPTY_COLOR = ConsoleColor.Black;
     private const string EMPTY_SYMBOL = " \u25FC";
@@ -22,10 +19,8 @@ public class Map
     private const string DIRECTION_SYMBOL_UPLEFT = " \u2B66";
 
 
-    List<Node> nodes;
-    List<Edge> edges;
-
-    public Node currentNode;
+    private List<Location> nodes;
+    private List<Trail> edges;
 
     private Vector2 mapSize;
 
@@ -34,25 +29,27 @@ public class Map
     /// </summary>
     private Tuple<string, ConsoleColor>[,] mapSymbols;
 
-    public Map()
+    public Location currentNode;
+
+    public GameMap()
     {
-        nodes = new List<Node>();
-        edges = new List<Edge>();
+        nodes = new List<Location>();
+        edges = new List<Trail>();
         CreateMap();
 
         // setup data to draw the map
-        mapSize = determineMapBoundaries();
+        mapSize = DetermineMapBoundaries();
 
         mapSymbols = new Tuple<string, ConsoleColor>[(int)mapSize.X, (int)mapSize.Y];
-        fillMapSymbols();
+        FillMapSymbols();
     }
 
     public void CreateMap()
     {
-        Node cityCentre = CreateNode(12, 12, ConsoleColor.Blue, "cityCentre", "The main square of a large city");
-        Node forest = CreateNode(16, 4, ConsoleColor.Green, "Forest", "A dark forest filled with trees");
-        Node mountains = CreateNode(2, 2, ConsoleColor.Gray, "Mountains", "Large mountain peaks with a cold climate surrounding them");
-        Node coast = CreateNode(9, 20, ConsoleColor.Yellow, "Coast", "Vast coastline seperating the land from the endless sea");
+        Location cityCentre = CreateNode(12, 12, ConsoleColor.Blue, "City Centre", "The main square of a large city");
+        Location forest = CreateNode(16, 4, ConsoleColor.Green, "Forest", "A dark forest filled with trees");
+        Location mountains = CreateNode(2, 2, ConsoleColor.Gray, "Mountains", "Large mountain peaks with a cold climate surrounding them");
+        Location coast = CreateNode(9, 20, ConsoleColor.Yellow, "Coast", "Vast coastline seperating the land from the endless sea");
 
         currentNode = cityCentre;
 
@@ -64,23 +61,23 @@ public class Map
         CreatEdge(mountains, coast, true, 30);
     }
 
-    public Node CreateNode(int xPos, int yPos, ConsoleColor color, string name, string description)
+    public Location CreateNode(int xPos, int yPos, ConsoleColor color, string name, string description)
     {
-        Node node = new Node(xPos, yPos, color, name, description);
+        Location node = new Location(xPos, yPos, color, name, description);
         nodes.Add(node);
         return node;
     }
 
-    public void CreatEdge(Node startNode, Node destinationNode, bool biDirectional, int stepValue)
+    public void CreatEdge(Location startNode, Location destinationNode, bool biDirectional, int stepValue)
     {
-        Edge edge = new Edge(startNode, destinationNode, biDirectional, stepValue);
+        Trail edge = new Trail(startNode, destinationNode, biDirectional, stepValue);
         edges.Add(edge);
     }
 
-    public List<Edge> GetPaths()
+    public List<Trail> GetPaths()
     {
-        List<Edge> paths = new List<Edge>();
-        foreach (Edge edge in edges)
+        List<Trail> paths = new List<Trail>();
+        foreach (Trail edge in edges)
         {
             if (edge.startNode == currentNode || (edge.destinationNode == currentNode && edge.biDirectional))
             {
@@ -97,7 +94,7 @@ public class Map
     /// The map is always a little bit bigger than the actual nodes.
     /// </summary>
     /// <returns></returns>
-    private Vector2 determineMapBoundaries()
+    private Vector2 DetermineMapBoundaries()
     {
         if (nodes == null) return new Vector2(0, 0);
 
@@ -110,9 +107,107 @@ public class Map
     /// <summary>
     /// This function fills the double array with their according symbols.
     /// </summary>
-    private void fillMapSymbols()
+    private void FillMapSymbols()
     {
+        CreateGameMap();
+        FillEdgeSymbols();
+        FillLocationSymbols();
+    }
 
+    /// <summary>
+    ///  Draws the map.
+    /// </summary>
+    public void DrawMap()
+    {
+        for (int y = 0; y < mapSize.Y; y++)
+        {
+            for (int x = 0; x < mapSize.X; x++)
+            {
+                Tuple<string, ConsoleColor> value = mapSymbols[x, y];
+                Console.ForegroundColor = value.Item2;
+
+                Console.Write(value.Item1);
+
+                Console.ResetColor();
+            }
+
+            if (y == 1)
+            {
+                Console.Write(" Legende");
+            }
+            else if (y == 2)
+            {
+                Console.Write(" --------");
+            }
+            else if (y > 2 && y <= nodes.Count + 2)
+            {
+                DrawLegendEntry(nodes[y - 3]);
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+    private void DrawLegendEntry(Location node)
+    {
+        Console.Write("");
+        Console.ForegroundColor = node.color;
+        Console.Write(LOCATION_SYMBOL);
+        Console.ResetColor();
+        Console.Write(" ");
+        Console.Write(node.name);
+    }
+
+    private void PlaceWay(int x, int y)
+    {
+        if (mapSymbols[x, y].Item1 == EMPTY_SYMBOL)
+        {
+            mapSymbols[x, y] = new Tuple<string, ConsoleColor>(WAY_SYMBOL, WAY_COLOR);
+        }
+    }
+
+    private string IsAdjacent(int pointX, int pointY, int nebX, int nebY)
+    {
+        if (nebX == pointX && nebY == pointY - 1)
+        {
+            return DIRECTION_SYMBOL_DOWN;
+        }
+        else if (nebX == pointX && nebY == pointY + 1)
+        {
+            return DIRECTION_SYMBOL_UP;
+        }
+        else if (nebX == pointX + 1 && nebY == pointY)
+        {
+            return DIRECTION_SYMBOL_LEFT;
+        }
+        else if (nebX == pointX - 1 && nebY == pointY)
+        {
+            return DIRECTION_SYMBOL_RIGHT;
+        }
+        else if (nebX == pointX + 1 && nebY == pointY + 1)
+        {
+            return DIRECTION_SYMBOL_UPLEFT;
+        }
+        else if (nebX == pointX + 1 && nebY == pointY - 1)
+        {
+            return DIRECTION_SYMBOL_DOWNLEFT;
+        }
+        else if (nebX == pointX - 1 && nebY == pointY + 1)
+        {
+            return DIRECTION_SYMBOL_UPRIGHT;
+        }
+        else if (nebX == pointX + 1 && nebY == pointY + 1)
+        {
+            return DIRECTION_SYMBOL_DOWNRIGHT;
+        }
+        else
+        {
+            return string.Empty;
+        }
+    }
+
+    private void CreateGameMap()
+    {
         for (int y = 0; y < mapSize.Y; y++)
         {
             for (int x = 0; x < mapSize.X; x++)
@@ -127,9 +222,11 @@ public class Map
                 }
             }
         }
+    }
 
-        // Add paths
-        foreach (Edge edge in edges)
+    private void FillEdgeSymbols()
+    {
+        foreach (Trail edge in edges)
         {
             // Draw path
             int fromX = edge.startNode.xPos;
@@ -187,103 +284,13 @@ public class Map
 
 
         }
+    }
 
-        // Add locations
-        foreach (Node node in nodes)
+    private void FillLocationSymbols()
+    {
+        foreach (Location node in nodes)
         {
             mapSymbols[node.xPos, node.yPos] = new Tuple<string, ConsoleColor>(LOCATION_SYMBOL, node.color);
-        }
-    }
-
-    /// <summary>
-    ///  Draws the map.
-    /// </summary>
-    public void DrawMap()
-    {
-        for (int y = 0; y < mapSize.Y; y++)
-        {
-            for (int x = 0; x < mapSize.X; x++)
-            {
-                Tuple<string, ConsoleColor> value = mapSymbols[x, y];
-                Console.ForegroundColor = value.Item2;
-
-                Console.Write(value.Item1);
-
-                Console.ResetColor();
-            }
-
-            if (y == 1)
-            {
-                Console.Write(" Legende");
-            }
-            else if (y == 2)
-            {
-                Console.Write(" --------");
-            }
-            else if (y > 2 && y <= nodes.Count + 2)
-            {
-                DrawLegendEntry(nodes[y - 3]);
-            }
-
-            Console.WriteLine();
-        }
-    }
-
-    private void DrawLegendEntry(Node node)
-    {
-        Console.Write("");
-        Console.ForegroundColor = node.color;
-        Console.Write(LOCATION_SYMBOL);
-        Console.ResetColor();
-        Console.Write(" ");
-        Console.Write(node.name);
-    }
-
-    private void PlaceWay(int x, int y)
-    {
-        if (mapSymbols[x, y].Item1 == EMPTY_SYMBOL)
-        {
-            mapSymbols[x, y] = new Tuple<string, ConsoleColor>(WAY_SYMBOL, WAY_COLOR);
-        }
-    }
-
-    private string IsAdjacent(int pointX, int pointY, int nebX, int nebY)
-    {
-        if (nebX == pointX && nebY == pointY - 1)
-        {
-            return DIRECTION_SYMBOL_DOWN;
-        }
-        else if (nebX == pointX && nebY == pointY + 1)
-        {
-            return DIRECTION_SYMBOL_UP;
-        }
-        else if (nebX == pointX + 1 && nebY == pointY)
-        {
-            return DIRECTION_SYMBOL_LEFT;
-        }
-        else if (nebX == pointX - 1 && nebY == pointY)
-        {
-            return DIRECTION_SYMBOL_RIGHT;
-        }
-        else if (nebX == pointX + 1 && nebY == pointY + 1)
-        {
-            return DIRECTION_SYMBOL_UPLEFT;
-        }
-        else if (nebX == pointX + 1 && nebY == pointY - 1)
-        {
-            return DIRECTION_SYMBOL_DOWNLEFT;
-        }
-        else if (nebX == pointX - 1 && nebY == pointY + 1)
-        {
-            return DIRECTION_SYMBOL_UPRIGHT;
-        }
-        else if (nebX == pointX + 1 && nebY == pointY + 1)
-        {
-            return DIRECTION_SYMBOL_DOWNRIGHT;
-        }
-        else
-        {
-            return string.Empty;
         }
     }
 }

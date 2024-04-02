@@ -3,12 +3,12 @@ using System.Text;
 
 public class TextRPG
 {
-    Map map;
+    GameMap map;
     Player player;
 
     public TextRPG()
     {
-        map = new Map();
+        map = new GameMap();
         player = new Player();
     }
 
@@ -27,12 +27,12 @@ public class TextRPG
     {
         Console.WriteLine("Walked distance: " + player.GetWalkedSteps() + " , location: " + map.currentNode.name + ".");
         StringBuilder stringBuilder = new StringBuilder();
-        List<Edge> paths = map.GetPaths();
+        List<Trail> paths = map.GetPaths();
         stringBuilder.AppendLine("Your possible destinations:");
         for (int i = 0; i < paths.Count; i++)
         {
-            Edge currentEdge = paths.ElementAt(i);
-            Node targetNode = currentEdge.destinationNode == map.currentNode ? currentEdge.startNode : currentEdge.destinationNode;
+            Trail currentEdge = paths.ElementAt(i);
+            Location targetNode = currentEdge.destinationNode == map.currentNode ? currentEdge.startNode : currentEdge.destinationNode;
             stringBuilder.AppendLine("(" + (i + 1) + "): " + targetNode.name + ", Steps: " + currentEdge.stepValue);
         }
         stringBuilder.Append("Choose your destination by typing the corresponding number:");
@@ -47,9 +47,9 @@ public class TextRPG
 
         while (true)
         {
-            List<Edge> paths = map.GetPaths();
+            List<Trail> paths = map.GetPaths();
             int input = Program.GetUserInput(1, paths.Count, this.InGameMenu);
-            Edge chosenEdge = paths.ElementAt(input - 1);
+            Trail chosenEdge = paths.ElementAt(input - 1);
             player.AddSteps(chosenEdge.stepValue);
             map.currentNode = chosenEdge.destinationNode == map.currentNode ? chosenEdge.startNode : chosenEdge.destinationNode;
             StringBuilder destinationStringBuilder = new StringBuilder();
