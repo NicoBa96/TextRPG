@@ -1,5 +1,4 @@
-﻿using System.Runtime.InteropServices;
-using System.Text;
+﻿using System.Text;
 
 public class Program
 {
@@ -11,6 +10,7 @@ public class Program
     while (true)
     {
       int startInput =  GetUserInput(1, 3, game.ShowMenu);
+      Console.Clear();
       if (startInput == 1)
       {
         game.Start();
