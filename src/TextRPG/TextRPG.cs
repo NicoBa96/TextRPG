@@ -49,6 +49,7 @@ public class TextRPG
         {
             List<Trail> paths = map.GetPaths();
             int input = Program.GetUserInput(1, paths.Count, this.InGameMenu);
+            Console.Clear();
             Trail chosenEdge = paths.ElementAt(input - 1);
             player.AddSteps(chosenEdge.stepValue);
             map.currentNode = chosenEdge.destinationNode == map.currentNode ? chosenEdge.startNode : chosenEdge.destinationNode;
