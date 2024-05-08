@@ -1,10 +1,10 @@
 public abstract class APlayerEvent : AGameEvent
 {
 
-    protected Player player;
-    public void Setup(Player player)
+    public APlayerEvent(Player player) : base()
     {
-     this.player = player;
+     this.player = player; 
     }
+    protected Player player;
 
 }

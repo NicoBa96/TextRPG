@@ -8,8 +8,8 @@ public class TextRPG
 
     public TextRPG()
     {
-        map = new GameMap();
         player = new Player();
+        map = new GameMap(player);
     }
 
 
@@ -59,6 +59,25 @@ public class TextRPG
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(destinationStringBuilder.ToString());
             Console.ResetColor();
+
+            OnLocationEnter(map.currentNode);
+
+        }
+    }
+
+    private void OnLocationEnter(Location location)
+    {
+        HandleEvent(location);
+    }
+
+    private void HandleEvent(Location location)
+    {
+        foreach (AGameEvent e in location.locationEvents)
+        {
+            if (e.AllConditionsFullfilled())
+            {
+                e.Action();
+            }
         }
     }
 

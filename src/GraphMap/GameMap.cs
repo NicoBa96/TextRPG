@@ -31,11 +31,11 @@ public class GameMap
 
     public Location currentNode;
 
-    public GameMap()
+    public GameMap(Player player)
     {
         nodes = new List<Location>();
         edges = new List<Trail>();
-        CreateMap();
+        CreateMap(player);
 
         // setup data to draw the map
         mapSize = DetermineMapBoundaries();
@@ -44,8 +44,9 @@ public class GameMap
         FillMapSymbols();
     }
 
-    public void CreateMap()
+    public void CreateMap(Player player)
     {
+        
         Location cityCentre = CreateNode(12, 12, ConsoleColor.Blue, "City Centre", "The main square of a large city");
         Location forest = CreateNode(16, 4, ConsoleColor.Green, "Forest", "A dark forest filled with trees");
         Location mountains = CreateNode(2, 2, ConsoleColor.Gray, "Mountains", "Large mountain peaks with a cold climate surrounding them");
@@ -59,6 +60,10 @@ public class GameMap
         CreatEdge(forest, mountains, true, 20);
         CreatEdge(coast, forest, true, 50);
         CreatEdge(mountains, coast, true, 30);
+
+        MarathonEvent marathonEvent = new MarathonEvent(player);
+        marathonEvent.AddCondition(new ByChanceCondition(0.25f));
+        forest.AddEvent(marathonEvent);
     }
 
     public Location CreateNode(int xPos, int yPos, ConsoleColor color, string name, string description)

@@ -2,6 +2,7 @@
 
 public class Program
 {
+  public static Random randomGenerator;
   public static void Main(string[] args)
   {
     Console.OutputEncoding = Encoding.UTF8;
@@ -21,17 +22,12 @@ public class Program
       }
       else if (startInput == 2)
       {
+        game.player.GrantMilestone(Milestone.WATCHCREDITS);
         game.ShowCredits();
       }
       else if (startInput == 3)
       {
         game.Exit();
-      }
-      else if (startInput == 4)
-      {
-        MarathonEvent marathon = new MarathonEvent();
-        marathon.Setup(game.player);
-        marathon.Action();
       }
       else
       {
@@ -63,6 +59,15 @@ public class Program
         Console.WriteLine("Invalid Input! Try again.");
       }
     }
+  }
+
+  public static float GetRandomNumber()
+  {
+    if (randomGenerator == null)
+    {
+      randomGenerator = new Random();
+    }
+    return (float)randomGenerator.NextDouble();
   }
 
 
