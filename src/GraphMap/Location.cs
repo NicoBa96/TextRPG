@@ -1,6 +1,6 @@
 public class Location
 {
-
+    
     public string name;
 
     public string description;

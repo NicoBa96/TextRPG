@@ -1,29 +1,38 @@
+using System.Text.Json.Serialization;
+
 public class Player
 {
+  [JsonInclude]
   string name = "Stepper";
+  [JsonInclude]
   int health = 10;
+  [JsonInclude]
   float stepFactor = 1;
+  [JsonInclude]
   int walkedSteps = 0;
 
-  Dictionary<Milestone, bool> milestoneMemory;
+  [JsonInclude]
+  Dictionary<string, bool> milestoneMemory;
 
-  Dictionary<Location, bool> locationMemory;
+  [JsonInclude]
+  Dictionary<string, bool> locationMemory;
 
-  public Location currentLocation;
+  [JsonInclude]
+  public string currentLocationName;
 
   public Player()
   {
-    milestoneMemory = new Dictionary<Milestone, bool>();
-    locationMemory = new Dictionary<Location, bool>();
+    milestoneMemory = new Dictionary<string, bool>();
+    locationMemory = new Dictionary<string, bool>();
     foreach (Milestone m in Milestone.ALL)
     {
-      milestoneMemory.Add(m, false);
+      milestoneMemory.Add(m.name, false);
     }
   }
 
   public bool IsLocationRevealed(Location l)
   {
-    if (locationMemory.TryGetValue(l, out bool isRevealed))
+    if (locationMemory.TryGetValue(l.name, out bool isRevealed))
     {
       return isRevealed;
     }
@@ -32,19 +41,19 @@ public class Player
 
   public void RevealLocation(Location l)
   {
-   locationMemory[l] = true;
+    locationMemory[l.name] = true;
   }
 
   public bool IsGrantedMilestone(Milestone m)
   {
-    return milestoneMemory[m];
+    return milestoneMemory[m.name];
   }
 
   public void GrantMilestone(Milestone m)
   {
-    if (milestoneMemory[m] == true) { return; }
+    if (milestoneMemory[m.name] == true) { return; }
 
-    milestoneMemory[m] = true;
+    milestoneMemory[m.name] = true;
     RPGWriter.Yellow("You recieved the Milestone: \"" + m.name + "\"!");
 
   }

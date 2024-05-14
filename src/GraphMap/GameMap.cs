@@ -37,7 +37,7 @@ public class GameMap
         nodes = new List<Location>();
         edges = new List<Trail>();
         this.player = player;
-        CreateMap(player);
+        CreateMap();
 
         // setup data to draw the map
         mapSize = DetermineMapBoundaries();
@@ -46,16 +46,13 @@ public class GameMap
         FillMapSymbols();
     }
 
-    public void CreateMap(Player player)
+    public void CreateMap()
     {
-        
+
         Location cityCentre = CreateNode(12, 12, ConsoleColor.Blue, "City Centre", "The main square of a large city");
         Location forest = CreateNode(16, 4, ConsoleColor.Green, "Forest", "A dark forest filled with trees");
         Location mountains = CreateNode(2, 2, ConsoleColor.Gray, "Mountains", "Large mountain peaks with a cold climate surrounding them");
         Location coast = CreateNode(9, 20, ConsoleColor.Yellow, "Coast", "Vast coastline seperating the land from the endless sea");
-
-        player.currentLocation = cityCentre;
-        player.RevealLocation(cityCentre);
 
         CreatEdge(cityCentre, forest, true, 10);
         CreatEdge(cityCentre, mountains, false, 30);
@@ -87,7 +84,7 @@ public class GameMap
         List<Trail> paths = new List<Trail>();
         foreach (Trail edge in edges)
         {
-            if (edge.startNode == player.currentLocation || (edge.destinationNode == player.currentLocation && edge.biDirectional))
+            if (edge.startNode == GetCurrentLocation() || (edge.destinationNode == GetCurrentLocation() && edge.biDirectional))
             {
                 paths.Add(edge);
             }
@@ -300,5 +297,21 @@ public class GameMap
         {
             mapSymbols[node.xPos, node.yPos] = new Tuple<string, ConsoleColor>(LOCATION_SYMBOL, node.color);
         }
+    }
+
+    public void SetCurrentLocation(Location l)
+    {
+        player.currentLocationName = l.name;
+        player.RevealLocation(l);
+    }
+
+    public Location GetCurrentLocation()
+    {
+        return nodes.First(l => l.name == player.currentLocationName);
+    }
+
+    public Location GetStartLocation()
+    {
+      return nodes[0];
     }
 }

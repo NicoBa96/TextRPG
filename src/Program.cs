@@ -10,30 +10,11 @@ public class Program
 
     while (true)
     {
-
-      int startInput = GetUserInput(1, 4, game.ShowMainMenu);
-      Console.Clear();
-
-      if (startInput == 1)
-      {
-        game.Start();
-
-      }
-      else if (startInput == 2)
-      {
-        game.player.GrantMilestone(Milestone.WATCHCREDITS);
-        game.ShowCredits();
-      }
-      else if (startInput == 3)
-      {
-        game.Exit();
-      }
-      else
-      {
-        RPGWriter.Red("Invalid Input!");
-      }
+      game.CreateMainMenu().HandleInput();
     }
   }
+
+
 
   public delegate void ShowMenu();
 

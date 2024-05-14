@@ -1,28 +1,49 @@
 using System.Drawing;
 using System.Text;
+using System.Text.Json;
 using Microsoft.VisualBasic;
 
 public class TextRPG
 {
-    GameMap map;
+    public GameMap map;
     public Player player;
     bool gameloop = true;
 
     public TextRPG()
     {
         player = new Player();
-        map = new GameMap(player);
     }
 
 
-    public void ShowMainMenu()
+    public SelectionMenu CreateMainMenu()
     {
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.AppendLine("Welcome to [The Big Step]! Please type:");
-        stringBuilder.AppendLine("1 - Play the Game");
-        stringBuilder.AppendLine("2 - Show Credits");
-        stringBuilder.AppendLine("3 - Exit the Game");
-        RPGWriter.Default(stringBuilder.ToString());
+        SelectionMenu menu = new SelectionMenu();
+
+        if (SavegameManager.HasSaveGame())
+        {
+            menu.AddEntry("c", "Continue", ContinueGame);
+        }
+        menu.AddEntry("n", "New Game", StartNewGame);
+        menu.AddEntry("w", "Watch Credits", ShowCredits);
+        menu.AddEntry("e", "Exit Game", Exit);
+
+        return menu;
+    }
+
+    private void StartNewGame()
+    {
+        player = new Player();
+        map = new GameMap(player);
+        map.SetCurrentLocation(map.GetStartLocation());
+        SavegameManager.SaveGame(player);
+        Start();
+    }
+
+    private void ContinueGame()
+    {
+        player = SavegameManager.LoadSaveGame();
+        map = new GameMap(player);
+        Start();
     }
 
     public void ShowGameMenu()
@@ -38,14 +59,14 @@ public class TextRPG
 
     public void MovePlayerMenu()
     {
-        RPGWriter.Default("Location: " + player.currentLocation.name + ", you can travel to:");
+        RPGWriter.Default("Location: " + player.currentLocationName + ", you can travel to:");
         StringBuilder stringBuilder = new StringBuilder();
         List<Trail> paths = map.GetPaths();
         stringBuilder.AppendLine("0 - Back to Menu");
         for (int i = 0; i < paths.Count; i++)
         {
             Trail currentEdge = paths.ElementAt(i);
-            Location targetNode = currentEdge.destinationNode == player.currentLocation ? currentEdge.startNode : currentEdge.destinationNode;
+            Location targetNode = currentEdge.destinationNode == map.GetCurrentLocation() ? currentEdge.startNode : currentEdge.destinationNode;
             if (player.IsLocationRevealed(targetNode))
             {
                 stringBuilder.AppendLine(String.Format("{0} - {1} [{2} steps]", i + 1, targetNode.name, currentEdge.stepValue));
@@ -66,7 +87,7 @@ public class TextRPG
 
         while (gameloop)
         {
-            RPGWriter.Default(String.Format("Location: {0} - Steps: {1} - Health: {2}", player.currentLocation.name, player.GetWalkedSteps(), player.GetHealth()));
+            RPGWriter.Default(String.Format("Location: {0} - Steps: {1} - Health: {2}", player.currentLocationName, player.GetWalkedSteps(), player.GetHealth()));
             int input = Program.GetUserInput(1, 3, ShowGameMenu);
 
             switch (input)
@@ -111,6 +132,7 @@ public class TextRPG
 
     private void BacktoMainMenu()
     {
+        SavegameManager.SaveGame(player);
         gameloop = false;
     }
 
@@ -135,15 +157,15 @@ public class TextRPG
 
         Trail chosenEdge = paths.ElementAt(input - 1);
         player.AddSteps(chosenEdge.stepValue);
-        player.currentLocation = chosenEdge.destinationNode == player.currentLocation ? chosenEdge.startNode : chosenEdge.destinationNode;
+        map.SetCurrentLocation(chosenEdge.destinationNode == map.GetCurrentLocation() ? chosenEdge.startNode : chosenEdge.destinationNode);
         StringBuilder destinationStringBuilder = new StringBuilder();
-        destinationStringBuilder.AppendLine(player.currentLocation.name);
-        destinationStringBuilder.AppendLine(player.currentLocation.description);
+        destinationStringBuilder.AppendLine(player.currentLocationName);
+        destinationStringBuilder.AppendLine(map.GetCurrentLocation().description);
         Console.ForegroundColor = ConsoleColor.Cyan;
         RPGWriter.Blue(destinationStringBuilder.ToString());
         Console.ResetColor();
 
-        OnLocationEnter(player.currentLocation);
+        OnLocationEnter(map.GetCurrentLocation());
     }
 
 
@@ -171,6 +193,7 @@ public class TextRPG
 
     public void ShowCredits()
     {
+        player.GrantMilestone(Milestone.WATCHCREDITS);
         RPGWriter.Default("Credits");
         RPGWriter.Default("Lead Developer: Nico B.");
         RPGWriter.Default("Assistant: Joshua S.");

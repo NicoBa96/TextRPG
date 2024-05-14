@@ -1,0 +1,16 @@
+{
+  "name": "Stepper",
+  "health": 10,
+  "stepFactor": 1,
+  "walkedSteps": 60,
+  "milestoneMemory": {
+    "20000 Steps": false,
+    "Credit Watcher": false
+  },
+  "locationMemory": {
+    "City Centre": true,
+    "Mountains": true,
+    "Coast": true
+  },
+  "currentLocationName": "Coast"
+}
