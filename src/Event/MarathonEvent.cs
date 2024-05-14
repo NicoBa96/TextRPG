@@ -7,10 +7,10 @@ public class MarathonEvent : APlayerEvent
     }
     public override void Action()
     {
-        Console.WriteLine();
-        RPGWriter.Green("You are participating at the 10km city marathon! Added steps to your stepcounter.");
+        RPGWriter.LineBreak();
+        RPGWriter.Green("You are participating at the 10km marathon! Added steps to your stepcounter.");
         player.AddSteps(10000);
-        Console.WriteLine("");
+        RPGWriter.LineBreak();
     }
 
 }

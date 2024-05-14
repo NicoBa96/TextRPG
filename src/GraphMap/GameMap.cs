@@ -29,12 +29,14 @@ public class GameMap
     /// </summary>
     private Tuple<string, ConsoleColor>[,] mapSymbols;
 
-    public Location currentNode;
+    private Player player;
+
 
     public GameMap(Player player)
     {
         nodes = new List<Location>();
         edges = new List<Trail>();
+        this.player = player;
         CreateMap(player);
 
         // setup data to draw the map
@@ -52,7 +54,8 @@ public class GameMap
         Location mountains = CreateNode(2, 2, ConsoleColor.Gray, "Mountains", "Large mountain peaks with a cold climate surrounding them");
         Location coast = CreateNode(9, 20, ConsoleColor.Yellow, "Coast", "Vast coastline seperating the land from the endless sea");
 
-        currentNode = cityCentre;
+        player.currentLocation = cityCentre;
+        player.RevealLocation(cityCentre);
 
         CreatEdge(cityCentre, forest, true, 10);
         CreatEdge(cityCentre, mountains, false, 30);
@@ -84,7 +87,7 @@ public class GameMap
         List<Trail> paths = new List<Trail>();
         foreach (Trail edge in edges)
         {
-            if (edge.startNode == currentNode || (edge.destinationNode == currentNode && edge.biDirectional))
+            if (edge.startNode == player.currentLocation || (edge.destinationNode == player.currentLocation && edge.biDirectional))
             {
                 paths.Add(edge);
             }
@@ -149,7 +152,7 @@ public class GameMap
                 DrawLegendEntry(nodes[y - 3]);
             }
 
-            Console.WriteLine();
+            RPGWriter.LineBreak();
         }
     }
 

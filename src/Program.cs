@@ -11,14 +11,13 @@ public class Program
     while (true)
     {
 
-      int startInput = GetUserInput(1, 4, game.ShowMenu);
+      int startInput = GetUserInput(1, 4, game.ShowMainMenu);
       Console.Clear();
 
       if (startInput == 1)
       {
         game.Start();
 
-        game.Exit();
       }
       else if (startInput == 2)
       {
@@ -31,7 +30,7 @@ public class Program
       }
       else
       {
-        Console.WriteLine("Invalid Input!");
+        RPGWriter.Red("Invalid Input!");
       }
     }
   }
@@ -44,6 +43,7 @@ public class Program
     {
       callback.Invoke();
       string userInput = Console.ReadLine()!;
+      RPGWriter.LineBreak();
       try
       {
         int choice = Int32.Parse(userInput);
@@ -56,7 +56,7 @@ public class Program
       catch (System.Exception)
       {
 
-        Console.WriteLine("Invalid Input! Try again.");
+        RPGWriter.Red("Invalid Input! Try again.");
       }
     }
   }

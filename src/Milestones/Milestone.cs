@@ -1,7 +1,6 @@
 public record struct Milestone
 {
     public static readonly List<Milestone> ALL = new List<Milestone>();
-    public static readonly Milestone TEST = new("test", "test discription");
     public static readonly Milestone STEPS_20000 = new("20000 Steps", "Make 20000 steps on your journey");
     public static readonly Milestone WATCHCREDITS = new("Credit Watcher", "Open the credits once");
     public string name;

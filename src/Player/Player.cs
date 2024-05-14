@@ -7,24 +7,46 @@ public class Player
 
   Dictionary<Milestone, bool> milestoneMemory;
 
+  Dictionary<Location, bool> locationMemory;
+
+  public Location currentLocation;
+
   public Player()
   {
     milestoneMemory = new Dictionary<Milestone, bool>();
+    locationMemory = new Dictionary<Location, bool>();
     foreach (Milestone m in Milestone.ALL)
     {
       milestoneMemory.Add(m, false);
     }
   }
 
-  public bool ActiveMilestone(Milestone m)
+  public bool IsLocationRevealed(Location l)
+  {
+    if (locationMemory.TryGetValue(l, out bool isRevealed))
+    {
+      return isRevealed;
+    }
+    return false;
+  }
+
+  public void RevealLocation(Location l)
+  {
+   locationMemory[l] = true;
+  }
+
+  public bool IsGrantedMilestone(Milestone m)
   {
     return milestoneMemory[m];
   }
 
   public void GrantMilestone(Milestone m)
   {
+    if (milestoneMemory[m] == true) { return; }
+
     milestoneMemory[m] = true;
     RPGWriter.Yellow("You recieved the Milestone: \"" + m.name + "\"!");
+
   }
 
   public int GetHealth()
