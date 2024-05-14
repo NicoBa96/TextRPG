@@ -7,11 +7,9 @@ public class Program
   {
     Console.OutputEncoding = Encoding.UTF8;
     TextRPG game = new TextRPG();
-
-    while (true)
-    {
+    
       game.CreateMainMenu().HandleInput();
-    }
+    
   }
 
 
