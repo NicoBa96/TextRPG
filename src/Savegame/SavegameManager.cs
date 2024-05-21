@@ -21,12 +21,20 @@ public class SavegameManager
     {
         string loadGame = File.ReadAllText(saveDataName);
         Player? player = JsonSerializer.Deserialize<Player>(loadGame);
-        if(player == null)
+        if (player == null)
         {
             RPGWriter.Red("Error: Failed to load saved player!");
             Environment.Exit(1);
         }
-        
+
         return player;
+    }
+
+    public static void DeleteSaveGame()
+    {
+        if (HasSaveGame())
+        {
+            File.Delete(saveDataName);
+        }
     }
 }

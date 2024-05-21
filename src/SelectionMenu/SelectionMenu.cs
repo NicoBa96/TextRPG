@@ -4,9 +4,11 @@ using System.Text;
 public class SelectionMenu
 {
 
-    public delegate void PrePrint();
+    public delegate bool PrePrint();
 
     PrePrint prePrint;
+
+    const string exitTrigger = "abort";
 
     List<SelectionMenuEntry> menuEntries;
 
@@ -27,9 +29,14 @@ public class SelectionMenu
         menuEntries.Add(entry);
     }
 
-    public void PrintMenu()
+    public bool PrintMenu()
     {
-        prePrint.Invoke();
+        bool prePrintContinueBool = prePrint.Invoke();
+        if (!prePrintContinueBool)
+        {
+            return false;
+        }
+
         StringBuilder stringBuilder = new StringBuilder();
         foreach (SelectionMenuEntry e in AvailableEntries())
         {
@@ -37,6 +44,7 @@ public class SelectionMenu
         }
 
         RPGWriter.Default(stringBuilder.ToString());
+        return true;
     }
 
     public List<SelectionMenuEntry> AvailableEntries()
@@ -58,6 +66,11 @@ public class SelectionMenu
         while (loop)
         {
             string input = GetUserInput();
+            if (input == exitTrigger)
+            {
+                return;
+            }
+
             loop = AvailableEntries().First(e => e.trigger == input).onTrigger.Invoke();
         }
     }
@@ -71,7 +84,12 @@ public class SelectionMenu
     {
         while (true)
         {
-            PrintMenu();
+            bool prePrintContinueBool = PrintMenu();
+            if (!prePrintContinueBool)
+            {
+                return exitTrigger;
+            }
+            
             string userInput = Console.ReadLine()!;
             RPGWriter.LineBreak();
             Console.Clear();

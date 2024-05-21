@@ -20,6 +20,9 @@ public class Player
   [JsonInclude]
   public string currentLocationName;
 
+  [JsonInclude]
+  int chanceEventTriggerCount = 0;
+
   public Player()
   {
     milestoneMemory = new Dictionary<string, bool>();
@@ -42,6 +45,7 @@ public class Player
   public void RevealLocation(Location l)
   {
     locationMemory[l.name] = true;
+
   }
 
   public bool IsGrantedMilestone(Milestone m)
@@ -63,6 +67,23 @@ public class Player
     return health;
   }
 
+  public void Damage(int dmgAmount)
+  {
+    health -= dmgAmount;
+    RPGWriter.Red("-" + dmgAmount + " health.");
+    RPGWriter.Yellow("Health: " + health);
+  }
+
+  public void Heal(int healAmount)
+  {
+    health += healAmount;
+  }
+
+  public bool IsDead()
+  {
+    return health <= 0;
+  }
+
   public string GetName()
   {
     return name;
@@ -71,6 +92,11 @@ public class Player
   public int GetWalkedSteps()
   {
     return walkedSteps;
+  }
+
+  public float GetStepFactor()
+  {
+    return stepFactor;
   }
 
   public int AddSteps(int stepAmount)
@@ -85,4 +111,19 @@ public class Player
     return newSteps;
   }
 
+  public void ChangeStepFactor(float factorChange)
+  {
+    stepFactor += factorChange;
+    RPGWriter.Yellow("New Step-Factor: " + stepFactor);
+  }
+
+  public void AddChanceConditionTriggerCount()
+  {
+    chanceEventTriggerCount += 1;
+
+    if (chanceEventTriggerCount == 5)
+    {
+      GrantMilestone(Milestone.FIFTH_CHANCE_CONDITION_EVENT);
+    }
+  }
 }

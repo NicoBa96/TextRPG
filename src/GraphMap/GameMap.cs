@@ -19,7 +19,7 @@ public class GameMap
     private const string DIRECTION_SYMBOL_UPLEFT = " \u2B66";
 
 
-    private List<Location> nodes;
+    public List<Location> nodes;
     private List<Trail> edges;
 
     private Vector2 mapSize;
@@ -50,9 +50,12 @@ public class GameMap
     {
 
         Location cityCentre = CreateNode(12, 12, ConsoleColor.Blue, "City Centre", "The main square of a large city");
-        Location forest = CreateNode(16, 4, ConsoleColor.Green, "Forest", "A dark forest filled with trees");
-        Location mountains = CreateNode(2, 2, ConsoleColor.Gray, "Mountains", "Large mountain peaks with a cold climate surrounding them");
+        Location cityOutskirts = CreateNode(12, 14, ConsoleColor.Cyan, "City Outskirts", "The quiet and peacefull suburbs of the city");
+        Location forest = CreateNode(14, 16, ConsoleColor.Green, "Forest", "A dark forest filled with trees");
+        Location mountains = CreateNode(11, 18, ConsoleColor.Gray, "Mountains", "Large mountain peaks with a cold climate surrounding them");
+        Location mountainTop = CreateNode(12, 18, ConsoleColor.DarkGray, "Mountaintop", "Standing on the peak of the mountain range, you can see as far as never before");
         Location coast = CreateNode(9, 20, ConsoleColor.Yellow, "Coast", "Vast coastline seperating the land from the endless sea");
+        Location desert = CreateNode(7, 18, ConsoleColor.DarkYellow, "Desert", "The heat of this sandy desert is a challange for many");
 
         CreatEdge(cityCentre, forest, true, 10);
         CreatEdge(cityCentre, mountains, false, 30);
@@ -60,10 +63,37 @@ public class GameMap
         CreatEdge(forest, mountains, true, 20);
         CreatEdge(coast, forest, true, 50);
         CreatEdge(mountains, coast, true, 30);
+        CreatEdge(cityCentre, cityOutskirts, true, 5);
+        CreatEdge(forest, cityOutskirts, true, 5);
+        CreatEdge(cityCentre, desert, false, 50);
+        CreatEdge(coast, desert, true, 10);
+        CreatEdge(mountains, mountainTop, true, 5);
+
+
+
 
         MarathonEvent marathonEvent = new MarathonEvent(player);
         marathonEvent.AddCondition(new ByChanceCondition(0.25f));
         forest.AddEvent(marathonEvent);
+
+        DesertDamageEvent desertDamageEvent = new DesertDamageEvent(player);
+        desert.AddEvent(desertDamageEvent);
+
+        RunningBootsEvent runningBootsEvent = new RunningBootsEvent(player);
+        runningBootsEvent.AddCondition(new ByChanceCondition(0.5f));
+        runningBootsEvent.AddCondition(new StepCountCondition(player, 500));
+        cityCentre.AddEvent(runningBootsEvent);
+        cityOutskirts.AddEvent(runningBootsEvent);
+
+        ToCityTeleportEvent toCityTeleportEvent = new ToCityTeleportEvent(player);
+        toCityTeleportEvent.AddCondition(new MilestoneCompletionCondition(player, Milestone.EVERYTHING_REVEALED, Milestone.FIRST_MAP_USAGE));
+        toCityTeleportEvent.AddCondition(new ByStepFactorCondition(player, 1.5f));
+        coast.AddEvent(toCityTeleportEvent);
+        mountains.AddEvent(toCityTeleportEvent);
+
+        mountainTop.AddEvent(new LocationRevealEvent(player, coast)
+                                    .AddText("You see a path to a coast in the distance.")
+                                    .AddByChanceCondition(0.5f));
     }
 
     public Location CreateNode(int xPos, int yPos, ConsoleColor color, string name, string description)
@@ -312,6 +342,6 @@ public class GameMap
 
     public Location GetStartLocation()
     {
-      return nodes[0];
+        return nodes[0];
     }
 }

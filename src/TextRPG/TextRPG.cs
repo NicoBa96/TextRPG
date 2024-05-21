@@ -20,22 +20,32 @@ public class TextRPG
         SelectionMenu menu = new SelectionMenu(() =>
         {
             RPGWriter.Blue("Welcome to the Big Stepper!");
+            return true;
         });
-        menu.AddConditionalEntry("c", "Continue", ContinueGame, SavegameManager.HasSaveGame);
-        menu.AddEntry("n", "New Game", StartNewGame);
-        menu.AddEntry("w", "Watch Credits", ShowCredits);
+        menu.AddConditionalEntry("c", "Continue", () =>
+        {
+            ContinueGame();
+            Start();
+            return true;
+        }, SavegameManager.HasSaveGame);
+
+        menu.AddEntry("n", "New Game", () =>
+        {
+            ResetSaveGame();
+            Start();
+            return true;
+        });
         menu.AddEntry("e", "Exit Game", Exit);
 
         return menu;
     }
 
-    private bool StartNewGame()
+    private bool ResetSaveGame()
     {
         player = new Player();
         map = new GameMap(player);
         map.SetCurrentLocation(map.GetStartLocation());
         SavegameManager.SaveGame(player);
-        Start();
         return true;
     }
 
@@ -43,7 +53,6 @@ public class TextRPG
     {
         player = SavegameManager.LoadSaveGame();
         map = new GameMap(player);
-        Start();
         return true;
     }
 
@@ -51,8 +60,15 @@ public class TextRPG
     {
         SelectionMenu menu = new SelectionMenu(() =>
         {
+            if (player.IsDead())
+            {
+                PrintDeathMenu();
+                return false;
+            }
+
             RPGWriter.Blue(String.Format("Location: {0} - Steps: {1} - Health: {2}", player.currentLocationName, player.GetWalkedSteps(), player.GetHealth()));
             RPGWriter.Blue("What do you want to do? Choose!");
+            return true;
         });
 
         menu.AddEntry("1", "Move", () =>
@@ -61,9 +77,18 @@ public class TextRPG
             return true;
         });
         menu.AddEntry("2", "Milestones", WatchMilestones);
-        menu.AddEntry("3", "Save & Exit", BacktoMainMenu);
+        menu.AddEntry("3", "Watch Credits", ShowCredits);
+        menu.AddEntry("4", "Save & Exit", BackToMainMenu);
 
         return menu;
+    }
+
+    private void PrintDeathMenu()
+    {
+        RPGWriter.Red("You are dead!");
+        RPGWriter.Red("Your Savegame has been deleted!");
+        RPGWriter.LineBreak();
+        SavegameManager.DeleteSaveGame();
     }
 
     public SelectionMenu CreateMoveMenu()
@@ -71,6 +96,7 @@ public class TextRPG
         SelectionMenu menu = new SelectionMenu(() =>
         {
             RPGWriter.Blue("Location: " + player.currentLocationName + ", you can travel to:");
+            return true;
         });
 
         menu.AddEntry("0", "Back to Menu", () => false);
@@ -94,6 +120,7 @@ public class TextRPG
 
         menu.AddEntry("m", "Show Map", () =>
         {
+            player.GrantMilestone(Milestone.FIRST_MAP_USAGE);
             map.DrawMap();
             return true;
         });
@@ -122,7 +149,6 @@ public class TextRPG
 
     private bool WatchMilestones()
     {
-        RPGWriter.LineBreak();
         RPGWriter.Default("Milestones:");
         foreach (Milestone m in Milestone.ALL)
         {
@@ -141,7 +167,7 @@ public class TextRPG
 
     }
 
-    private bool BacktoMainMenu()
+    private bool BackToMainMenu()
     {
         SavegameManager.SaveGame(player);
         return false;
@@ -150,8 +176,16 @@ public class TextRPG
     private void OnLocationEnter(Location location)
     {
         player.RevealLocation(location);
+        if (map.nodes.All(player.IsLocationRevealed))
+        {
+            player.GrantMilestone(Milestone.EVERYTHING_REVEALED);
+        }
+        RPGWriter.Yellow("You have enetered: " + location.name + ", " + location.description + ".");
+        RPGWriter.LineBreak();
         HandleEvent(location);
     }
+
+
 
     private void HandleEvent(Location location)
     {
@@ -159,6 +193,10 @@ public class TextRPG
         {
             if (e.AllConditionsFullfilled())
             {
+                if (e.conditions.Any(c => { return c is ByChanceCondition; }))
+                {
+                    player.AddChanceConditionTriggerCount();
+                }
                 e.Action();
             }
         }
@@ -172,7 +210,7 @@ public class TextRPG
 
     public bool ShowCredits()
     {
-        player.GrantMilestone(Milestone.WATCHCREDITS);
+        player.GrantMilestone(Milestone.WATCH_CREDITS);
         RPGWriter.Default("Credits");
         RPGWriter.Default("Lead Developer: Nico B.");
         RPGWriter.Default("Assistant: Joshua S.");

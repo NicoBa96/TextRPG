@@ -2,15 +2,17 @@
   "name": "Stepper",
   "health": 10,
   "stepFactor": 1,
-  "walkedSteps": 10030,
+  "walkedSteps": 0,
   "milestoneMemory": {
     "20000 Steps": false,
-    "Credit Watcher": false
+    "Credit Watcher": false,
+    "Everything revealed": false,
+    "Navigator": false,
+    "Lucky Boy": false
   },
   "locationMemory": {
-    "City Centre": true,
-    "Forest": true,
-    "Mountains": true
+    "City Centre": true
   },
-  "currentLocationName": "Mountains"
+  "currentLocationName": "City Centre",
+  "chanceEventTriggerCount": 0
 }

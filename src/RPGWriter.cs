@@ -48,4 +48,9 @@ public class RPGWriter
     {
         RPGWriter.Default("");
     }
+
+     public static void EventText(string text, bool newLine = true)
+    {
+        Color(text, ConsoleColor.Green, newLine);
+    }
 }
