@@ -49,8 +49,18 @@ public class RPGWriter
         RPGWriter.Default("");
     }
 
-     public static void EventText(string text, bool newLine = true)
+    public static void EventText(string text, bool newLine = true)
     {
         Color(text, ConsoleColor.Green, newLine);
+    }
+
+    public static void Gain(string text, bool newLine = true)
+    {
+        Color("+ " + text, ConsoleColor.Green, newLine);
+    }
+
+    public static void Decrease(string text, bool newLine = true)
+    {
+        Color("- " + text, ConsoleColor.Red, newLine);
     }
 }

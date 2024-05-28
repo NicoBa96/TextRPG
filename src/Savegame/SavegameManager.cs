@@ -4,11 +4,11 @@ public class SavegameManager
 {
     private const string saveDataName = "save.json";
 
-    public static void SaveGame(Player player)
+    public static void SaveGame()
     {
         JsonSerializerOptions options = new JsonSerializerOptions();
         options.WriteIndented = true;
-        string jsonString = JsonSerializer.Serialize(player, options);
+        string jsonString = JsonSerializer.Serialize(TextRPG.instance.player, options);
         File.WriteAllText(saveDataName, jsonString);
     }
 

@@ -1,11 +1,9 @@
-using System.Security;
-
-public class ByLocationRevealCondition : APlayerEventCondition
+public class NotRevealedCondition : APlayerEventCondition
 {
     Location[] nodes;
 
 
-    public ByLocationRevealCondition(params Location[] nodes) : base()
+    public NotRevealedCondition(params Location[] nodes) : base()
     {
         this.nodes = nodes;
     }
@@ -16,7 +14,7 @@ public class ByLocationRevealCondition : APlayerEventCondition
 
         foreach (Location l in nodes)
         {
-            if (!TextRPG.instance.player.IsLocationRevealed(l))
+            if (TextRPG.instance.player.IsLocationRevealed(l))
             {
                 fullfilled = false;
             }

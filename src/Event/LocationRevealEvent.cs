@@ -1,10 +1,11 @@
 public class LocationRevealEvent : APlayerEvent
 {
     Location[] locations;
-    public LocationRevealEvent(Player player, params Location[] locations) : base(player)
+
+    public LocationRevealEvent(params Location[] locations) : base()
     {
         this.locations = locations;
-
+        conditions.Add(new NotRevealedCondition(locations));
     }
 
     public override void Action()
@@ -12,7 +13,7 @@ public class LocationRevealEvent : APlayerEvent
         base.Action();
         foreach (Location l in locations)
         {
-            player.RevealLocation(l);
+            TextRPG.instance.player.RevealLocation(l);
         }
     }
 }

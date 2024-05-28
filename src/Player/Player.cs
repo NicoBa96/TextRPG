@@ -18,6 +18,9 @@ public class Player
   Dictionary<string, bool> locationMemory;
 
   [JsonInclude]
+  public Inventory inventory;
+
+  [JsonInclude]
   public string currentLocationName;
 
   [JsonInclude]
@@ -27,6 +30,7 @@ public class Player
   {
     milestoneMemory = new Dictionary<string, bool>();
     locationMemory = new Dictionary<string, bool>();
+    inventory = new Inventory();
     foreach (Milestone m in Milestone.ALL)
     {
       milestoneMemory.Add(m.name, false);
@@ -44,8 +48,17 @@ public class Player
 
   public void RevealLocation(Location l)
   {
-    locationMemory[l.name] = true;
+    if (IsLocationRevealed(l))
+    {
+      return;
+    }
 
+    locationMemory[l.name] = true;
+    RPGWriter.Gain("Location Knowledge: " + l.name);
+    if (TextRPG.instance.map.nodes.All(IsLocationRevealed))
+    {
+      GrantMilestone(Milestone.EVERYTHING_REVEALED);
+    }
   }
 
   public bool IsGrantedMilestone(Milestone m)
@@ -58,7 +71,7 @@ public class Player
     if (milestoneMemory[m.name] == true) { return; }
 
     milestoneMemory[m.name] = true;
-    RPGWriter.Yellow("You recieved the Milestone: \"" + m.name + "\"!");
+    RPGWriter.Gain("Milestone: " + m.name);
 
   }
 
@@ -70,13 +83,13 @@ public class Player
   public void Damage(int dmgAmount)
   {
     health -= dmgAmount;
-    RPGWriter.Red("-" + dmgAmount + " health.");
-    RPGWriter.Yellow("Health: " + health);
+    RPGWriter.Decrease($"{dmgAmount} health");
   }
 
   public void Heal(int healAmount)
   {
     health += healAmount;
+    RPGWriter.Gain($"{healAmount} health");
   }
 
   public bool IsDead()
@@ -103,7 +116,7 @@ public class Player
   {
     int newSteps = (int)(stepAmount * stepFactor);
     walkedSteps += newSteps;
-    RPGWriter.Yellow("+ " + newSteps + " steps.");
+    RPGWriter.Gain($"{newSteps} steps");
     if (walkedSteps >= 20000)
     {
       GrantMilestone(Milestone.STEPS_20000);
@@ -113,8 +126,9 @@ public class Player
 
   public void ChangeStepFactor(float factorChange)
   {
+    float oldStepFactor = stepFactor;
     stepFactor += factorChange;
-    RPGWriter.Yellow("New Step-Factor: " + stepFactor);
+    RPGWriter.Gain($"{factorChange} step factor ({oldStepFactor} => {stepFactor})");
   }
 
   public void AddChanceConditionTriggerCount()
@@ -125,5 +139,10 @@ public class Player
     {
       GrantMilestone(Milestone.FIFTH_CHANCE_CONDITION_EVENT);
     }
+  }
+
+  public void AddItemToInventory(AItem i)
+  {
+    inventory.AddItem(i);
   }
 }

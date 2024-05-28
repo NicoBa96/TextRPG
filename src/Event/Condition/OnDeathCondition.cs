@@ -1,13 +1,12 @@
 public class OnDeathCondition : APlayerEventCondition
 {
 
-    public OnDeathCondition(Player player) : base(player)
+    public OnDeathCondition() : base()
     {
-        this.player = player;
     }
 
     public override bool IsFullfilled()
     {
-        return player.GetHealth() <= 0;
+        return TextRPG.instance.player.GetHealth() <= 0;
     }
 }

@@ -1,7 +1,7 @@
 public class DesertDamageEvent : APlayerEvent
 {
 
-    public DesertDamageEvent(Player player) : base(player)
+    public DesertDamageEvent() : base()
     {
 
     }
@@ -9,7 +9,7 @@ public class DesertDamageEvent : APlayerEvent
     {
         RPGWriter.LineBreak();
         RPGWriter.Red("The heat is too much for you.");
-        player.Damage(5);
+        TextRPG.instance.player.Damage(5);
         RPGWriter.LineBreak();
     }
 

@@ -3,13 +3,13 @@ public class ByStepFactorCondition : APlayerEventCondition
 
     float stepFactorThreshold;
 
-    public ByStepFactorCondition(Player player, float stepFactorThreshold) : base(player)
+    public ByStepFactorCondition(float stepFactorThreshold) : base()
     {
         this.stepFactorThreshold = stepFactorThreshold;
     }
 
     public override bool IsFullfilled()
     {
-        return player.GetStepFactor() >= stepFactorThreshold;
+        return TextRPG.instance.player.GetStepFactor() >= stepFactorThreshold;
     }
 }

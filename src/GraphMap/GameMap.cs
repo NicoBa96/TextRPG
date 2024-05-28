@@ -29,14 +29,12 @@ public class GameMap
     /// </summary>
     private Tuple<string, ConsoleColor>[,] mapSymbols;
 
-    private Player player;
 
 
-    public GameMap(Player player)
+    public GameMap()
     {
         nodes = new List<Location>();
         edges = new List<Trail>();
-        this.player = player;
         CreateMap();
 
         // setup data to draw the map
@@ -72,26 +70,24 @@ public class GameMap
 
 
 
-        MarathonEvent marathonEvent = new MarathonEvent(player);
-        marathonEvent.AddCondition(new ByChanceCondition(0.25f));
-        forest.AddEvent(marathonEvent);
+        forest.AddEvent(new MarathonEvent()
+                           .AddCondition(new ByChanceCondition(0.25f)));
 
-        DesertDamageEvent desertDamageEvent = new DesertDamageEvent(player);
-        desert.AddEvent(desertDamageEvent);
+        desert.AddEvent(new DesertDamageEvent());
 
-        RunningBootsEvent runningBootsEvent = new RunningBootsEvent(player);
-        runningBootsEvent.AddCondition(new ByChanceCondition(0.5f));
-        runningBootsEvent.AddCondition(new StepCountCondition(player, 500));
+        var runningBootsEvent = new RunningBootsEvent()
+                                 .AddCondition(new ByChanceCondition(0.5f))
+                                 .AddCondition(new StepCountCondition(500));
         cityCentre.AddEvent(runningBootsEvent);
         cityOutskirts.AddEvent(runningBootsEvent);
 
-        ToCityTeleportEvent toCityTeleportEvent = new ToCityTeleportEvent(player);
-        toCityTeleportEvent.AddCondition(new MilestoneCompletionCondition(player, Milestone.EVERYTHING_REVEALED, Milestone.FIRST_MAP_USAGE));
-        toCityTeleportEvent.AddCondition(new ByStepFactorCondition(player, 1.5f));
+        var toCityTeleportEvent = new ToCityTeleportEvent()
+                                        .AddCondition(new MilestoneCompletionCondition(Milestone.EVERYTHING_REVEALED, Milestone.FIRST_MAP_USAGE))
+                                        .AddCondition(new ByStepFactorCondition(1.5f));
         coast.AddEvent(toCityTeleportEvent);
         mountains.AddEvent(toCityTeleportEvent);
 
-        mountainTop.AddEvent(new LocationRevealEvent(player, coast)
+        mountainTop.AddEvent(new LocationRevealEvent(coast)
                                     .AddText("You see a path to a coast in the distance.")
                                     .AddByChanceCondition(0.5f));
     }
@@ -331,13 +327,12 @@ public class GameMap
 
     public void SetCurrentLocation(Location l)
     {
-        player.currentLocationName = l.name;
-        player.RevealLocation(l);
+        TextRPG.instance.player.currentLocationName = l.name;
     }
 
     public Location GetCurrentLocation()
     {
-        return nodes.First(l => l.name == player.currentLocationName);
+        return nodes.First(l => l.name == TextRPG.instance.player.currentLocationName);
     }
 
     public Location GetStartLocation()

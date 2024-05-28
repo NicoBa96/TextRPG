@@ -3,7 +3,7 @@ public class MilestoneCompletionCondition : APlayerEventCondition
     Milestone[] milestones;
 
 
-    public MilestoneCompletionCondition(Player player, params Milestone[] milestones) : base(player)
+    public MilestoneCompletionCondition(params Milestone[] milestones) : base()
     {
         this.milestones = milestones;
     }
@@ -14,7 +14,7 @@ public class MilestoneCompletionCondition : APlayerEventCondition
 
         foreach (Milestone m in milestones)
         {
-            if (!player.IsGrantedMilestone(m))
+            if (!TextRPG.instance.player.IsGrantedMilestone(m))
             {
               fullfilled = false;
             }

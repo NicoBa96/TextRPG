@@ -1,9 +1,7 @@
 public abstract class APlayerEventCondition : AEventCondition
 {
-    protected Player player;
 
-    public APlayerEventCondition(Player player)
+    public APlayerEventCondition()
     {
-     this.player = player;
     }
 }

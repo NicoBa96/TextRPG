@@ -1,7 +1,7 @@
 public class ToCityTeleportEvent : APlayerEvent
 {
 
-    public ToCityTeleportEvent(Player player) : base(player)
+    public ToCityTeleportEvent() : base()
     {
 
     }
@@ -10,7 +10,7 @@ public class ToCityTeleportEvent : APlayerEvent
         RPGWriter.LineBreak();
         RPGWriter.Green("You suddenly feel strange magic surrounding you");
         RPGWriter.Green("IN the next momnent, you realize that you have been sent back to the city in an instant.");
-        player.currentLocationName = "City Centre";
+        TextRPG.instance.player.currentLocationName = "City Centre";
         RPGWriter.LineBreak();
         RPGWriter.Yellow("You are now at: City Centre");
         RPGWriter.LineBreak();
