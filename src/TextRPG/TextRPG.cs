@@ -30,6 +30,8 @@ public class TextRPG
         player = new Player();
         map = new GameMap();
         map.SetCurrentLocation(map.GetStartLocation());
+        Quest testQuest = new Quest(1).AddReachLocationGoal(Locations.mountains);
+        player.questMemory.StartQuest(testQuest);
         SavegameManager.SaveGame();
         return true;
     }
@@ -43,7 +45,6 @@ public class TextRPG
 
     public void Start()
     {
-        RPGWriter.Default(">>Game starts<<");
         SelectionMenu menu = _gameMenu.CreateGameMenu();
         menu.HandleInput();
     }

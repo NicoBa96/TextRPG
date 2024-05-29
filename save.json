@@ -10,7 +10,20 @@
     "Navigator": false,
     "Lucky Boy": false
   },
-  "locationMemory": {},
+  "locationMemory": {
+    "City Centre": true
+  },
+  "questMemory": {
+    "questStatus": {
+      "1": 0
+    },
+    "questProgress": {
+      "1": {
+        "0": 0,
+        "1": 0
+      }
+    }
+  },
   "inventory": {
     "inventory": {
       "1": 2,

@@ -18,6 +18,9 @@ public class Player
   Dictionary<string, bool> locationMemory;
 
   [JsonInclude]
+  public QuestMemory questMemory;
+
+  [JsonInclude]
   public Inventory inventory;
 
   [JsonInclude]
@@ -30,6 +33,7 @@ public class Player
   {
     milestoneMemory = new Dictionary<string, bool>();
     locationMemory = new Dictionary<string, bool>();
+    questMemory = new QuestMemory();
     inventory = new Inventory();
     foreach (Milestone m in Milestone.ALL)
     {
@@ -72,7 +76,6 @@ public class Player
 
     milestoneMemory[m.name] = true;
     RPGWriter.Gain("Milestone: " + m.name);
-
   }
 
   public int GetHealth()
