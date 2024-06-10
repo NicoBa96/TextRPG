@@ -1,10 +1,11 @@
 public class ReachLocationGoal : AQuestGoal
 {
-    Location goalLocation;
+    public Location goalLocation;
 
-    public ReachLocationGoal(Location goalLocation) : base()
+    public ReachLocationGoal(Quest quest, string id,Location goalLocation) : base(quest, id)
     {
      this.goalLocation = goalLocation;
+
     }
 
     public override string GetDescription()

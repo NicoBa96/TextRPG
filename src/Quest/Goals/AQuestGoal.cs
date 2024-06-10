@@ -1,18 +1,37 @@
 public abstract class AQuestGoal
 {
 
-    protected float progress;
+    public Quest quest;
     protected float progressGoal;
 
-    public AQuestGoal()
+    public string id;
+
+    public AQuestGoal(Quest quest, string id)
     {
-        progress = 0;
+        this.quest = quest;
+        this.id = id;
         progressGoal = 1;
+
     }
     public bool IsFullfilled()
     {
-        return progress == progressGoal;
+        return GetProgress() >= progressGoal;
     }
 
     public abstract string GetDescription();
+
+    public void AddProgress(float increment)
+    {
+        float newProgress = GetProgress() + increment;
+        if (newProgress >= progressGoal)
+        {
+            newProgress = progressGoal;
+        }
+        TextRPG.instance.player.questMemory.SetQuestGoalProgress(this, newProgress);
+    }
+
+    public float GetProgress()
+    {
+    return TextRPG.instance.player.questMemory.GetQuestGoalProgress(this);
+    }
 }

@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Text.Json.Serialization;
 
 public class Player
@@ -52,6 +53,8 @@ public class Player
 
   public void RevealLocation(Location l)
   {
+    UpdateReachLocationGoals(l);
+
     if (IsLocationRevealed(l))
     {
       return;
@@ -64,6 +67,23 @@ public class Player
       GrantMilestone(Milestone.EVERYTHING_REVEALED);
     }
   }
+
+  private void UpdateReachLocationGoals(Location l)
+  {
+    List<Quest> quests = questMemory.GetAllQuestsByStatus(QuestStatus.InProgress);
+    foreach (Quest q in quests)
+    {
+      foreach (ReachLocationGoal reachLocationGoal in q.goals.OfType<ReachLocationGoal>())
+      {
+        if (reachLocationGoal.goalLocation == l)
+        {
+          reachLocationGoal.AddProgress(1);
+        }
+      }
+    }
+  }
+
+
 
   public bool IsGrantedMilestone(Milestone m)
   {

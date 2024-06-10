@@ -9,7 +9,9 @@ public class TextRPG
     public static TextRPG instance;
     public GameMap map;
     public Player player;
-    public MainMenu _mainMenu;
+    public MainMenu mainMenu;
+    public QuestRegistry questRegistry;
+
     private GameMenu _gameMenu;
 
     public TextRPG()
@@ -20,9 +22,9 @@ public class TextRPG
         }
 
         player = new Player();
-        _mainMenu = new MainMenu();
+        mainMenu = new MainMenu();
         _gameMenu = new GameMenu(player);
-
+        questRegistry = new QuestRegistry(this);
     }
 
     public bool ResetSaveGame()
@@ -30,8 +32,7 @@ public class TextRPG
         player = new Player();
         map = new GameMap();
         map.SetCurrentLocation(map.GetStartLocation());
-        Quest testQuest = new Quest(1).AddReachLocationGoal(Locations.mountains);
-        player.questMemory.StartQuest(testQuest);
+        player.questMemory.StartQuest(questRegistry.GetQuest(QuestIdentifier.StartQuest));
         SavegameManager.SaveGame();
         return true;
     }
@@ -39,7 +40,7 @@ public class TextRPG
     public bool ContinueGame()
     {
         player = SavegameManager.LoadSaveGame();
-        map = new GameMap();
+
         return true;
     }
 

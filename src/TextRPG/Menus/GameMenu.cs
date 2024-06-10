@@ -2,13 +2,11 @@ public class GameMenu
 {
     private MoveMenu _moveMenu;
     private InventoryMenu _inventoryMenu;
-    private Player player;
 
     public GameMenu(Player player)
     {
         _moveMenu = new MoveMenu();
         _inventoryMenu = new InventoryMenu();
-        this.player = player;
     }
 
     public SelectionMenu CreateGameMenu()
@@ -21,13 +19,14 @@ public class GameMenu
                 return false;
             }
 
-            RPGWriter.Blue(String.Format("Location: {0} - Steps: {1} - Health: {2}", player.currentLocationName, player.GetWalkedSteps(), player.GetHealth()));
+            RPGWriter.Blue(String.Format("Location: {0} - Steps: {1} - Health: {2}", TextRPG.instance.player.currentLocationName, TextRPG.instance.player.GetWalkedSteps(), TextRPG.instance.player.GetHealth()));
             RPGWriter.Blue("What do you want to do? Choose!");
             return true;
         });
 
         menu.AddEntry("1", "Move", _moveMenu.OpenMoveMenu);
         menu.AddEntry("i", "Inventory", _inventoryMenu.OpenInventory);
+        menu.AddEntry("j", "Quests", WatchQuests);
         menu.AddEntry("2", "Milestones", WatchMilestones);
         menu.AddEntry("3", "Watch Credits", ShowCredits);
         menu.AddEntry("4", "Save & Exit", BackToMainMenu);
@@ -45,12 +44,12 @@ public class GameMenu
 
     private bool WatchMilestones()
     {
-        RPGWriter.Default("Milestones:");
+        RPGWriter.Blue("Milestones:");
         foreach (Milestone m in Milestone.ALL)
         {
-            if (player.IsGrantedMilestone(m))
+            if (TextRPG.instance.player.IsGrantedMilestone(m))
             {
-                RPGWriter.Green("[X] " + m.name + " - " + m.description);
+                RPGWriter.Default("[X] " + m.name + " - " + m.description);
 
             }
             else
@@ -63,9 +62,22 @@ public class GameMenu
         return true;
     }
 
+    private bool WatchQuests()
+    {
+        RPGWriter.Blue("Your active Quests:");
+        List<Quest> questList = TextRPG.instance.player.questMemory.GetAllQuestsByStatus(QuestStatus.InProgress);
+        foreach (Quest q in questList)
+        {
+            RPGWriter.Default(q.ToString());
+        }
+
+        RPGWriter.LineBreak();
+        return true;
+    }
+
     private bool ShowCredits()
     {
-        player.GrantMilestone(Milestone.WATCH_CREDITS);
+        TextRPG.instance.player.GrantMilestone(Milestone.WATCH_CREDITS);
         RPGWriter.Default("Credits");
         RPGWriter.Default("Lead Developer: Nico B.");
         RPGWriter.Default("Assistant: Joshua S.");
