@@ -1,5 +1,8 @@
 public enum QuestIdentifier
 {
- StartQuest
+ StartQuest,
+ DeliverLetterToCoast,
+ MakingShoeLack,
+ UpgradeYourShoes,
 
 }

@@ -17,6 +17,7 @@ public class Inventory
     {
         AddItemInternal(i, increase);
         RPGWriter.Gain($"{increase}x {i.name}");
+        TextRPG.instance.player.UpdateRecieveItemGoal(i, increase);
     }
 
     private void AddItemInternal(AItem i, int increase = 1)

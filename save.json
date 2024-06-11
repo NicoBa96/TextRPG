@@ -1,8 +1,8 @@
 {
   "name": "Stepper",
   "stamina": 10,
-  "stepFactor": 1.5,
-  "walkedSteps": 45,
+  "stepFactor": 1,
+  "walkedSteps": 0,
   "milestoneMemory": {
     "20000 Steps": false,
     "Credit Watcher": false,
@@ -11,16 +11,20 @@
     "Lucky Boy": false
   },
   "locationMemory": {
-    "City Centre": true,
-    "Mountains": true
+    "City Centre": true
   },
   "questMemory": {
     "questStatus": {
-      "StartQuest": 2
+      "StartQuest": 0,
+      "DeliverLetterToCoast": 0
     },
     "questProgress": {
       "StartQuest": {
-        "rloc-01": 1
+        "rloc-01": 0
+      },
+      "DeliverLetterToCoast": {
+        "rloc-01": 0,
+        "rig-01": 1
       }
     }
   },
@@ -28,9 +32,10 @@
     "inventory": {
       "1": 2,
       "2": 1,
-      "3": 1
+      "3": 1,
+      "4": 1
     }
   },
-  "currentLocationName": "Mountains",
+  "currentLocationName": "City Centre",
   "chanceEventTriggerCount": 0
 }

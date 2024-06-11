@@ -68,6 +68,7 @@ public class Player
     }
   }
 
+  #region GoalUpdaters
   private void UpdateReachLocationGoals(Location l)
   {
     List<Quest> quests = questMemory.GetAllQuestsByStatus(QuestStatus.InProgress);
@@ -77,13 +78,63 @@ public class Player
       {
         if (reachLocationGoal.goalLocation == l)
         {
-          reachLocationGoal.AddProgress(1);
+          reachLocationGoal.ChangeProgress(1);
         }
       }
     }
   }
 
+  public void UpdateRecieveItemGoal(AItem item, int itemAmount)
+  {
+    List<Quest> quests = questMemory.GetAllQuestsByStatus(QuestStatus.InProgress);
+    foreach (Quest q in quests)
+    {
+      foreach (RecieveItemGoal recieveItemGoal in q.goals.OfType<RecieveItemGoal>())
+      {
+        if (recieveItemGoal.desiredItem == item)
+        {
+          recieveItemGoal.ChangeProgress(itemAmount);
+        }
+      }
+    }
+  }
 
+  private void UpdateStepCountGoal(int stepAmount)
+  {
+    List<Quest> quests = questMemory.GetAllQuestsByStatus(QuestStatus.InProgress);
+    foreach (Quest q in quests)
+    {
+      foreach (StepCountGoal stepCountGoal in q.goals.OfType<StepCountGoal>())
+      {
+        stepCountGoal.ChangeProgress(stepAmount);
+      }
+    }
+  }
+
+  private void UpdateStaminaAmountGoal(int staminaAmount)
+  {
+    List<Quest> quests = questMemory.GetAllQuestsByStatus(QuestStatus.InProgress);
+    foreach (Quest q in quests)
+    {
+      foreach (StaminaAmountGoal staminaAmountGoal in q.goals.OfType<StaminaAmountGoal>())
+      {
+        staminaAmountGoal.ChangeProgress(staminaAmount);
+      }
+    }
+  }
+
+  private void UpdateStepFactorValueGoal(float stepFactorValue)
+  {
+    List<Quest> quests = questMemory.GetAllQuestsByStatus(QuestStatus.InProgress);
+    foreach (Quest q in quests)
+    {
+      foreach (StepFactorValueGoal stepFactorValueGoal in q.goals.OfType<StepFactorValueGoal>())
+      {
+        stepFactorValueGoal.ChangeProgress(stepFactorValue);
+      }
+    }
+  }
+  #endregion
 
   public bool IsGrantedMilestone(Milestone m)
   {
@@ -103,16 +154,18 @@ public class Player
     return stamina;
   }
 
-  public void Exhaust(int dmgAmount)
+  public void Exhaust(int exhAmount)
   {
-    stamina -= dmgAmount;
-    RPGWriter.Decrease($"{dmgAmount} stamina");
+    stamina -= exhAmount;
+    RPGWriter.Decrease($"{exhAmount} stamina");
+    UpdateStaminaAmountGoal(exhAmount);
   }
 
-  public void Replenish(int healAmount)
+  public void Replenish(int repAmount)
   {
-    stamina += healAmount;
-    RPGWriter.Gain($"{healAmount} stamina");
+    stamina += repAmount;
+    RPGWriter.Gain($"{repAmount} stamina");
+    UpdateStaminaAmountGoal(repAmount);
   }
 
   public bool IsDead()
@@ -144,6 +197,8 @@ public class Player
     {
       GrantMilestone(Milestone.STEPS_20000);
     }
+
+    UpdateStepCountGoal(stepAmount);
     return newSteps;
   }
 
@@ -159,6 +214,7 @@ public class Player
     {
       RPGWriter.Decrease($"{factorChange} step factor ({oldStepFactor} => {stepFactor})");
     }
+    UpdateStepFactorValueGoal(factorChange);
   }
 
   public void AddChanceConditionTriggerCount()
@@ -171,8 +227,8 @@ public class Player
     }
   }
 
-  public void AddItemToInventory(AItem i)
+  public void AddItemToInventory(AItem i, int amount = 1)
   {
-    inventory.AddItem(i);
+    inventory.AddItem(i, amount);
   }
 }

@@ -22,15 +22,16 @@ public static class Items
         }
     }
 
+
     public static readonly ShoeLackCream BasicLack = new(1, "Basic Lack", "Simple shoe lack for improving your steps", 0.1f);
     public static readonly ShoeLackCream AdvancedLack = new(2, "Advanced Lack", "Better shoe lack for improving your steps even further", 0.25f);
     public static readonly QuestItem GoldenKey = new(3, "Golden Key", "A Key for a specific door in the city");
-
+    public static readonly QuestItem Letter = new(4, "Letter", "A Letter you need to deliver");
 
     public static AItem GetItembyId(int providedId)
     {
-     return ALL.First(i => i.id == providedId);
-     
+        return ALL.First(i => i.id == providedId);
+
     }
 
 }

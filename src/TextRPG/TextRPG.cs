@@ -33,6 +33,8 @@ public class TextRPG
         player = new Player();
         map.SetCurrentLocation(map.GetStartLocation());
         player.questMemory.StartQuest(questRegistry.GetQuest(QuestIdentifier.StartQuest));
+        player.questMemory.StartQuest(questRegistry.GetQuest(QuestIdentifier.DeliverLetterToCoast));
+        player.AddItemToInventory(Items.Letter);
         SavegameManager.SaveGame();
         return true;
     }

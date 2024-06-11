@@ -2,17 +2,19 @@ public abstract class AQuestGoal
 {
 
     public Quest quest;
-    protected float progressGoal;
-
+    public bool isExact;
     public string id;
 
-    public AQuestGoal(Quest quest, string id)
+    protected float progressGoal;
+
+    public AQuestGoal(Quest quest, string id, bool isExact)
     {
         this.quest = quest;
         this.id = id;
         progressGoal = 1;
-
+        this.isExact = isExact;
     }
+
     public bool IsFullfilled()
     {
         return GetProgress() >= progressGoal;
@@ -20,11 +22,11 @@ public abstract class AQuestGoal
 
     public abstract string GetDescription();
 
-    public void AddProgress(float increment)
+    public void ChangeProgress(float delta)
     {
-        bool questFullfilledBeforeIncrement = quest.IsFullfilled();
-        AddGoalProgress(increment);
-        if (!questFullfilledBeforeIncrement && quest.IsFullfilled())
+        bool questFullfilledBeforeDelta = quest.IsFullfilled();
+        ChangeGoalProgress(delta);
+        if (!questFullfilledBeforeDelta && quest.IsFullfilled())
         {
             OnQuestCompletion();
         }
@@ -37,17 +39,29 @@ public abstract class AQuestGoal
         quest.GiveCompletionRewards();
     }
 
-    private void AddGoalProgress(float increment)
+    private void ChangeGoalProgress(float delta)
     {
         bool goalFullfilledBeforeIncrement = IsFullfilled();
-        float newProgress = GetProgress() + increment;
-        if (newProgress >= progressGoal)
+        if (goalFullfilledBeforeIncrement)
+        {
+            return;
+        }
+
+        float newProgress = GetProgress() + delta;
+        if (!isExact && newProgress >= progressGoal)
         {
             newProgress = progressGoal;
         }
+        else if (newProgress >= 0)
+        {
+            newProgress = 0;
+        }
+
+
+
         TextRPG.instance.player.questMemory.SetQuestGoalProgress(this, newProgress);
 
-        if (!goalFullfilledBeforeIncrement && newProgress >= progressGoal)
+        if (!goalFullfilledBeforeIncrement && ((!isExact && newProgress >= progressGoal) || (isExact && newProgress == progressGoal)))
         {
             RPGWriter.Green($"You completed a subgoal of the quest {quest.name}: {this.GetDescription()}");
         }

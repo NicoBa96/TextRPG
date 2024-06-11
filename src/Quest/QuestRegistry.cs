@@ -16,6 +16,17 @@ public class QuestRegistry
          .SetDescription("Go meet your mudda at the mountains.")
          .AddReachLocationGoal("rloc-01", Locations.mountains)
          .AddStepFactorQuestReward(0.5f);
+
+         new Quest(this, QuestIdentifier.DeliverLetterToCoast)
+         .SetName("Letter Delivery")
+         .SetDescription("Deliver the letter to the coast.")
+         .AddReachLocationGoal("rloc-01", Locations.coast)
+         .AddRecieveItemGoal("rig-01", Items.Letter, 1)
+         .AddStepQuestReward(300)
+         .AddStaminaQuestReward(3);
+         
+         
+
     }
 
     public Quest GetQuest(QuestIdentifier id)
