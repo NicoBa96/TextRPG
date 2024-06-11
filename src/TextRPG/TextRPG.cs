@@ -56,7 +56,7 @@ public class TextRPG
         {
             if (e.AllConditionsFullfilled())
             {
-                if (e.conditions.Any(c => { return c is ByChanceCondition; }))
+                if (e.conditions.Any(c => { return c is ByChanceEventCondition; }))
                 {
                     player.AddChanceConditionTriggerCount();
                 }

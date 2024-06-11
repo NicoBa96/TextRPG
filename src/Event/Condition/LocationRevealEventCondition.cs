@@ -1,11 +1,11 @@
 using System.Security;
 
-public class ByLocationRevealCondition : APlayerEventCondition
+public class LocationRevealEventCondition : AEventCondition
 {
     Location[] nodes;
 
 
-    public ByLocationRevealCondition(params Location[] nodes) : base()
+    public LocationRevealEventCondition(params Location[] nodes) : base()
     {
         this.nodes = nodes;
     }

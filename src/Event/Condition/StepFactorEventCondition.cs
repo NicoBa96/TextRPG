@@ -1,9 +1,9 @@
-public class ByStepFactorCondition : APlayerEventCondition
+public class StepFactorEventCondition : AEventCondition
 {
 
     float stepFactorThreshold;
 
-    public ByStepFactorCondition(float stepFactorThreshold) : base()
+    public StepFactorEventCondition(float stepFactorThreshold) : base()
     {
         this.stepFactorThreshold = stepFactorThreshold;
     }

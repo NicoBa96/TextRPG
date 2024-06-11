@@ -1,4 +1,4 @@
-public class DesertDamageEvent : APlayerEvent
+public class DesertDamageEvent : AGameEvent
 {
 
     public DesertDamageEvent() : base()

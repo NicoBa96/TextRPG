@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-public class CatChaseEvent : APlayerEvent
+public class CatChaseEvent : AGameEvent
 {
 
     public CatChaseEvent() : base()

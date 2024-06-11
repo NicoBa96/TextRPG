@@ -1,9 +1,9 @@
-public class NotRevealedCondition : APlayerEventCondition
+public class NotRevealedEventCondition : AEventCondition
 {
     Location[] nodes;
 
 
-    public NotRevealedCondition(params Location[] nodes) : base()
+    public NotRevealedEventCondition(params Location[] nodes) : base()
     {
         this.nodes = nodes;
     }

@@ -1,9 +1,9 @@
-public class ByChanceCondition : AEventCondition
+public class ByChanceEventCondition : AEventCondition
 {
 
     float chanceValue;
 
-    public ByChanceCondition(float chanceValue)
+    public ByChanceEventCondition(float chanceValue)
     {
         this.chanceValue = chanceValue;
     }

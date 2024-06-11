@@ -81,25 +81,25 @@ public class GameMap
     public void AssignAllEvents()
     {
         Locations.forest.AddEvent(new MarathonEvent()
-                                   .AddCondition(new ByChanceCondition(0.25f)));
+                                   .AddCondition(new ByChanceEventCondition(0.25f)));
 
         Locations.desert.AddEvent(new DesertDamageEvent());
 
         var runningBootsEvent = new RunningBootsEvent()
-                                 .AddCondition(new ByChanceCondition(0.5f))
-                                 .AddCondition(new StepCountCondition(500));
+                                 .AddCondition(new ByChanceEventCondition(0.5f))
+                                 .AddCondition(new StepCountEventCondition(500));
         Locations.cityCentre.AddEvent(runningBootsEvent);
         Locations.cityOutskirts.AddEvent(runningBootsEvent);
 
         var toCityTeleportEvent = new ToCityTeleportEvent()
-                                        .AddCondition(new MilestoneCompletionCondition(Milestone.EVERYTHING_REVEALED, Milestone.FIRST_MAP_USAGE))
-                                        .AddCondition(new ByStepFactorCondition(1.5f));
+                                        .AddCondition(new MilestoneCompletionEventCondition(Milestone.EVERYTHING_REVEALED, Milestone.FIRST_MAP_USAGE))
+                                        .AddCondition(new StepFactorEventCondition(1.5f));
         Locations.coast.AddEvent(toCityTeleportEvent);
         Locations.mountains.AddEvent(toCityTeleportEvent);
 
         Locations.mountainTop.AddEvent(new LocationRevealEvent(Locations.coast)
                                     .AddText("You see a path to a coast in the distance.")
-                                    .AddByChanceCondition(0.5f));
+                                    .OnChance(0.5f));
     }
 
     public List<Trail> GetPaths()

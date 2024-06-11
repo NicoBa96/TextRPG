@@ -1,7 +1,7 @@
-public class OnDeathCondition : APlayerEventCondition
+public class OnDeathEventCondition : AEventCondition
 {
 
-    public OnDeathCondition() : base()
+    public OnDeathEventCondition() : base()
     {
     }
 

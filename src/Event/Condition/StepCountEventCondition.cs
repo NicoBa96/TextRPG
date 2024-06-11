@@ -1,11 +1,11 @@
-public class StepCountCondition : APlayerEventCondition
+public class StepCountEventCondition : AEventCondition
 {
 
     int stepThreshold;
 
-    public StepCountCondition(int stepFactorThreshold) : base()
+    public StepCountEventCondition(int stepThreshold) : base()
     {
-        this.stepThreshold = stepFactorThreshold;
+        this.stepThreshold = stepThreshold;
     }
 
     public override bool IsFullfilled()

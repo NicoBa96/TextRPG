@@ -1,11 +1,11 @@
-public class LocationRevealEvent : APlayerEvent
+public class LocationRevealEvent : AGameEvent
 {
     Location[] locations;
 
     public LocationRevealEvent(params Location[] locations) : base()
     {
         this.locations = locations;
-        conditions.Add(new NotRevealedCondition(locations));
+        conditions.Add(new NotRevealedEventCondition(locations));
     }
 
     public override void Action()

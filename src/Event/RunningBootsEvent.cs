@@ -1,4 +1,4 @@
-public class RunningBootsEvent : APlayerEvent
+public class RunningBootsEvent : AGameEvent
 {
 
     public RunningBootsEvent() : base()

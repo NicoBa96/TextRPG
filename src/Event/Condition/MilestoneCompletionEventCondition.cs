@@ -1,9 +1,9 @@
-public class MilestoneCompletionCondition : APlayerEventCondition
+public class MilestoneCompletionEventCondition : AEventCondition
 {
     Milestone[] milestones;
 
 
-    public MilestoneCompletionCondition(params Milestone[] milestones) : base()
+    public MilestoneCompletionEventCondition(params Milestone[] milestones) : base()
     {
         this.milestones = milestones;
     }

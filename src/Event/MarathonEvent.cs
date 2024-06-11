@@ -1,4 +1,4 @@
-public class MarathonEvent : APlayerEvent
+public class MarathonEvent : AGameEvent
 {
 
     public MarathonEvent() : base()
