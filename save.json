@@ -1,6 +1,6 @@
 {
   "name": "Stepper",
-  "health": 10,
+  "stamina": 10,
   "stepFactor": 1.5,
   "walkedSteps": 45,
   "milestoneMemory": {

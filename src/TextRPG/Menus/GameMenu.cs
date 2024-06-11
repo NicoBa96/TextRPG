@@ -27,6 +27,7 @@ public class GameMenu
         });
 
         menu.AddEntry("1", "Move", _moveMenu.OpenMoveMenu);
+        menu.AddEntry("c", "Character Stats", WatchCharacterStats);
         menu.AddEntry("i", "Inventory", _inventoryMenu.OpenInventory);
         menu.AddEntry("j", "Quests", WatchQuests);
         menu.AddEntry("2", "Milestones", WatchMilestones);
@@ -34,6 +35,26 @@ public class GameMenu
         menu.AddEntry("4", "Save & Exit", BackToMainMenu);
 
         return menu;
+    }
+
+    private bool WatchCharacterStats()
+    {
+        RPGWriter.Default("Stats:");
+        RPGWriter.Default($"- Walked Steps: {TextRPG.instance.player.GetWalkedSteps()}");
+        RPGWriter.Default($"- Step Factor: {TextRPG.instance.player.GetStepFactor()}");
+        RPGWriter.Default($"- Stamina: {TextRPG.instance.player.GetStamina()}");
+
+        int visitedLocations = Locations.ALL.Count(TextRPG.instance.player.IsLocationRevealed);
+        RPGWriter.Default($"- Visited Locations: {visitedLocations}/{Locations.ALL.Count()}");
+
+        int completedMilestoneAmount = Milestone.ALL.Count(TextRPG.instance.player.IsGrantedMilestone);
+        RPGWriter.Default($"- Completed Milestones: {completedMilestoneAmount}/{Milestone.ALL.Count()}");
+
+        int completedQuestAmount = TextRPG.instance.player.questMemory.GetAllQuestsByStatus(QuestStatus.Finished).Count();
+        RPGWriter.Default($"- Completed Quests: {completedQuestAmount}/{TextRPG.instance.questRegistry.allQuests.Count()}");
+
+        RPGWriter.LineBreak();
+        return true;
     }
 
     private void PrintDeathMenu()
