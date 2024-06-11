@@ -53,6 +53,11 @@ public class QuestMemory
         return allActiveQuests;
     }
 
+    public bool HasQuestSpecifiedStatus(Quest quest, QuestStatus status)
+    {
+        return questStatus[quest.id] == status;
+    }
+
     internal float GetQuestGoalProgress(AQuestGoal aQuestGoal)
     {
         Dictionary<string, float> progress = GetQuestProgress(aQuestGoal.quest);
