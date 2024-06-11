@@ -6,7 +6,7 @@ public class Player
   [JsonInclude]
   string name = "Stepper";
   [JsonInclude]
-  int health = 10;
+  int stamina = 10;
   [JsonInclude]
   float stepFactor = 1;
   [JsonInclude]
@@ -98,26 +98,26 @@ public class Player
     RPGWriter.Gain("Milestone: " + m.name);
   }
 
-  public int GetHealth()
+  public int GetStamina()
   {
-    return health;
+    return stamina;
   }
 
-  public void Damage(int dmgAmount)
+  public void Exhaust(int dmgAmount)
   {
-    health -= dmgAmount;
-    RPGWriter.Decrease($"{dmgAmount} health");
+    stamina -= dmgAmount;
+    RPGWriter.Decrease($"{dmgAmount} stamina");
   }
 
-  public void Heal(int healAmount)
+  public void Replenish(int healAmount)
   {
-    health += healAmount;
-    RPGWriter.Gain($"{healAmount} health");
+    stamina += healAmount;
+    RPGWriter.Gain($"{healAmount} stamina");
   }
 
   public bool IsDead()
   {
-    return health <= 0;
+    return stamina <= 0;
   }
 
   public string GetName()

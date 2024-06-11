@@ -21,7 +21,7 @@ public class GameMenu
                 return false;
             }
 
-            RPGWriter.Blue(String.Format("Location: {0} - Steps: {1} - Health: {2}", TextRPG.instance.player.currentLocationName, TextRPG.instance.player.GetWalkedSteps(), TextRPG.instance.player.GetHealth()));
+            RPGWriter.Blue(String.Format("Location: {0} - Steps: {1} - Stamina: {2}", TextRPG.instance.player.currentLocationName, TextRPG.instance.player.GetWalkedSteps(), TextRPG.instance.player.GetStamina()));
             RPGWriter.Blue("What do you want to do? Choose!");
             return true;
         });
