@@ -1,8 +1,8 @@
 {
   "name": "Stepper",
   "health": 10,
-  "stepFactor": 1,
-  "walkedSteps": 130,
+  "stepFactor": 1.5,
+  "walkedSteps": 45,
   "milestoneMemory": {
     "20000 Steps": false,
     "Credit Watcher": false,
@@ -12,13 +12,11 @@
   },
   "locationMemory": {
     "City Centre": true,
-    "Coast": true,
-    "Forest": true,
     "Mountains": true
   },
   "questMemory": {
     "questStatus": {
-      "StartQuest": 0
+      "StartQuest": 2
     },
     "questProgress": {
       "StartQuest": {

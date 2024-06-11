@@ -151,7 +151,14 @@ public class Player
   {
     float oldStepFactor = stepFactor;
     stepFactor += factorChange;
-    RPGWriter.Gain($"{factorChange} step factor ({oldStepFactor} => {stepFactor})");
+    if (factorChange >= 0)
+    {
+      RPGWriter.Gain($"{factorChange} step factor ({oldStepFactor} => {stepFactor})");
+    }
+    else
+    {
+      RPGWriter.Decrease($"{factorChange} step factor ({oldStepFactor} => {stepFactor})");
+    }
   }
 
   public void AddChanceConditionTriggerCount()

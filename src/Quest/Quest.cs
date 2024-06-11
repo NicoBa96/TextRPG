@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using System.Text;
 
 public class Quest
@@ -6,11 +7,13 @@ public class Quest
     public string name;
     public string description;
     public List<AQuestGoal> goals;
+    public List<IQuestReward> rewards;
 
     public Quest(QuestRegistry questRegistry, QuestIdentifier id)
     {
         this.id = id;
         goals = new List<AQuestGoal>();
+        rewards = new List<IQuestReward>();
         questRegistry.AddQuest(this);
     }
 
@@ -29,6 +32,11 @@ public class Quest
     public string GetSummary()
     {
         return $"{name} - {description}";
+    }
+
+    public bool IsFullfilled()
+    {
+        return goals.All(g => g.IsFullfilled());
     }
 
     public override string ToString()
@@ -57,5 +65,20 @@ public class Quest
         ReachLocationGoal reachLocationGoal = new ReachLocationGoal(this, id, location);
         goals.Add(reachLocationGoal);
         return this;
+    }
+
+    public Quest AddStepFactorQuestReward(float stepFactorAmount)
+    {
+      StepFactorQuestReward stepFactorQuestReward = new StepFactorQuestReward(stepFactorAmount);
+      rewards.Add(stepFactorQuestReward);
+      return this;
+    }
+
+
+    internal void GiveCompletionRewards()
+    {
+        RPGWriter.Green("You recieve the following quest rewards:");
+        rewards.ForEach(r => r.Grant());
+        RPGWriter.LineBreak();
     }
 }

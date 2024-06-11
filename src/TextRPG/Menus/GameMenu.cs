@@ -1,3 +1,5 @@
+using System.Data.Common;
+
 public class GameMenu
 {
     private MoveMenu _moveMenu;
@@ -66,9 +68,27 @@ public class GameMenu
     {
         RPGWriter.Blue("Your active Quests:");
         List<Quest> questList = TextRPG.instance.player.questMemory.GetAllQuestsByStatus(QuestStatus.InProgress);
+        if (questList.Count() == 0)
+        {
+            RPGWriter.Yellow("You have no active quests");
+        }
+
         foreach (Quest q in questList)
         {
-            RPGWriter.Default(q.ToString());
+            RPGWriter.Default("- " + q.ToString());
+        }
+
+        RPGWriter.LineBreak();
+        RPGWriter.Blue("Your completed Quests:");
+        List<Quest> completedQuestList = TextRPG.instance.player.questMemory.GetAllQuestsByStatus(QuestStatus.Finished);
+        if (completedQuestList.Count() == 0)
+        {
+            RPGWriter.Yellow("You have no completed quests");
+        }
+
+        foreach (Quest q in completedQuestList)
+        {
+            RPGWriter.DarkGray("- " + q.GetSummary());
         }
 
         RPGWriter.LineBreak();

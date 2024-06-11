@@ -25,12 +25,12 @@ public class TextRPG
         mainMenu = new MainMenu();
         _gameMenu = new GameMenu(player);
         questRegistry = new QuestRegistry(this);
+        map = new GameMap();
     }
 
     public bool ResetSaveGame()
     {
         player = new Player();
-        map = new GameMap();
         map.SetCurrentLocation(map.GetStartLocation());
         player.questMemory.StartQuest(questRegistry.GetQuest(QuestIdentifier.StartQuest));
         SavegameManager.SaveGame();

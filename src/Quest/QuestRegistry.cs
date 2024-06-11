@@ -14,7 +14,8 @@ public class QuestRegistry
         new Quest(this, QuestIdentifier.StartQuest)
          .SetName("Mudda Meeting")
          .SetDescription("Go meet your mudda at the mountains.")
-         .AddReachLocationGoal("rloc-01", Locations.mountains);
+         .AddReachLocationGoal("rloc-01", Locations.mountains)
+         .AddStepFactorQuestReward(0.5f);
     }
 
     public Quest GetQuest(QuestIdentifier id)
