@@ -14,21 +14,27 @@ public class QuestMemory
         questProgress = new Dictionary<QuestIdentifier, Dictionary<string, float>>();
     }
 
-    public void StartQuest(Quest quest)
+    public void StartQuest(QuestIdentifier questIdentifier)
     {
-        if (questStatus.Any(q => q.Key == quest.id))
+        if (questStatus.Any(q => q.Key == questIdentifier))
         {
             return;
         }
 
-        questStatus.Add(quest.id, QuestStatus.InProgress);
+        Quest quest = TextRPG.instance.questRegistry.GetQuest(questIdentifier);
+        questStatus.Add(questIdentifier, QuestStatus.InProgress);
         Dictionary<string, float> questGoalsProgress = new Dictionary<string, float>();
         for (int i = 0; i < quest.goals.Count; i++)
         {
             questGoalsProgress.Add(quest.goals[i].id, 0);
         }
+
         questProgress.Add(quest.id, questGoalsProgress);
         RPGWriter.Gain($"New Quest: {quest.name} - {quest.description}");
+        foreach (string text in quest.startQuestText)
+        {
+            RPGWriter.Yellow(text);
+        }
     }
 
     public List<Quest> GetAllQuestsByStatus(QuestStatus desiredStatus)
@@ -53,9 +59,14 @@ public class QuestMemory
         return allActiveQuests;
     }
 
-    public bool HasQuestSpecifiedStatus(Quest quest, QuestStatus status)
+    public bool HasQuestSpecifiedStatus(QuestIdentifier questIdentifier, QuestStatus status)
     {
-        return questStatus[quest.id] == status;
+        if (!questStatus.ContainsKey(questIdentifier))
+        {
+          return status == QuestStatus.Open;  
+        }
+
+        return questStatus[questIdentifier] == status;
     }
 
     internal float GetQuestGoalProgress(AQuestGoal aQuestGoal)

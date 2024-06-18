@@ -47,7 +47,7 @@ public class MoveMenu
     {
         Location newLocation = trail.destinationNode == TextRPG.instance.map.GetCurrentLocation() ? trail.startNode : trail.destinationNode;
         TextRPG.instance.map.SetCurrentLocation(newLocation);
-        TextRPG.instance.player.Exhaust(1);
+        TextRPG.instance.player.ChangeStamina(-1);
         RPGWriter.Yellow("You have entered: " + newLocation.name + ", " + newLocation.description);
         RPGWriter.LineBreak();
 

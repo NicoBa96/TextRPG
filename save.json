@@ -15,8 +15,8 @@
   },
   "questMemory": {
     "questStatus": {
-      "StartQuest": 0,
-      "DeliverLetterToCoast": 0
+      "StartQuest": 1,
+      "DeliverLetterToCoast": 1
     },
     "questProgress": {
       "StartQuest": {

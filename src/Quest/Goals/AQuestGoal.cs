@@ -35,6 +35,11 @@ public abstract class AQuestGoal
     private void OnQuestCompletion()
     {
         TextRPG.instance.player.questMemory.questStatus[quest.id] = QuestStatus.Finished;
+        foreach (string endQuestText in quest.endQuestText)
+        {
+            RPGWriter.Yellow(endQuestText);
+        }
+
         RPGWriter.Green($"You completed the quest {quest.GetSummary()}");
         quest.GiveCompletionRewards();
     }

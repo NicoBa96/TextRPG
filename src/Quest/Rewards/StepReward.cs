@@ -1,7 +1,7 @@
-public class StepQuestReward : IQuestReward
+public class StepReward : IReward
 {
     int stepAmount;
-    public StepQuestReward(int stepAmount)
+    public StepReward(int stepAmount)
     {
         this.stepAmount = stepAmount;
     }

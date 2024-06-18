@@ -1,4 +1,4 @@
-public interface IQuestReward
+public interface IReward
 {
     public void Grant();
     

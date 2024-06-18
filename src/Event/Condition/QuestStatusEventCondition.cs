@@ -1,16 +1,16 @@
 public class QuestStatusEventCondition : AEventCondition
 {
-    Quest quest;
+    QuestIdentifier questIdentifier;
     QuestStatus questStatus;
 
-    public QuestStatusEventCondition(Quest quest, QuestStatus questStatus) : base()
+    public QuestStatusEventCondition(QuestIdentifier questIdentifier, QuestStatus questStatus) : base()
     {
-        this.quest = quest;
+        this.questIdentifier = questIdentifier;
         this.questStatus = questStatus;
     }
 
     public override bool IsFullfilled()
     {
-        return TextRPG.instance.player.questMemory.HasQuestSpecifiedStatus(quest, questStatus);
+        return TextRPG.instance.player.questMemory.HasQuestSpecifiedStatus(questIdentifier, questStatus);
     }
 }

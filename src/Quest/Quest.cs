@@ -6,14 +6,18 @@ public class Quest
     public QuestIdentifier id;
     public string name;
     public string description;
+    public List<string> startQuestText;
+    public List<string> endQuestText;
     public List<AQuestGoal> goals;
-    public List<IQuestReward> rewards;
+    public List<IReward> rewards;
 
     public Quest(QuestRegistry questRegistry, QuestIdentifier id)
     {
         this.id = id;
         goals = new List<AQuestGoal>();
-        rewards = new List<IQuestReward>();
+        rewards = new List<IReward>();
+        startQuestText = new List<string>();
+        endQuestText = new List<string>();
         questRegistry.AddQuest(this);
     }
 
@@ -26,6 +30,18 @@ public class Quest
     public Quest SetDescription(string description)
     {
         this.description = description;
+        return this;
+    }
+
+    public Quest AddStartQuestText(string questTextLine)
+    {
+        startQuestText.Add(questTextLine);
+        return this;
+    }
+
+    public Quest AddEndQuestText(string questTextLine)
+    {
+        endQuestText.Add(questTextLine);
         return this;
     }
 
@@ -68,9 +84,9 @@ public class Quest
         return this;
     }
 
-    public Quest AddRecieveItemGoal(string id, AItem item, int itemAmount, bool isExact = false)
+    public Quest AddRecieveItemGoal(string id, AItem item, int itemAmount, bool consumeItemOnCompletion, bool isExact = false)
     {
-        RecieveItemGoal recieveItemGoal = new RecieveItemGoal(this, id, isExact, item, itemAmount);
+        RecieveItemGoal recieveItemGoal = new RecieveItemGoal(this, id, isExact, item, itemAmount, consumeItemOnCompletion);
         goals.Add(recieveItemGoal);
         return this;
     }
@@ -100,28 +116,28 @@ public class Quest
     #region AddRewards
     public Quest AddStepFactorQuestReward(float stepFactorAmount)
     {
-        StepFactorQuestReward stepFactorQuestReward = new StepFactorQuestReward(stepFactorAmount);
+        StepFactorReward stepFactorQuestReward = new StepFactorReward(stepFactorAmount);
         rewards.Add(stepFactorQuestReward);
         return this;
     }
 
     public Quest AddItemQuestReward(AItem item, int amount)
     {
-        ItemQuestReward itemQuestReward = new ItemQuestReward(item, amount);
+        ItemReward itemQuestReward = new ItemReward(item, amount);
         rewards.Add(itemQuestReward);
         return this;
     }
 
     public Quest AddStaminaQuestReward(int staminaAmount)
     {
-        StaminaQuestReward staminaQuestReward = new StaminaQuestReward(staminaAmount);
+        StaminaReward staminaQuestReward = new StaminaReward(staminaAmount);
         rewards.Add(staminaQuestReward);
         return this;
     }
 
     public Quest AddStepQuestReward(int stepAmount)
     {
-        StepQuestReward stepQuestReward = new StepQuestReward(stepAmount);
+        StepReward stepQuestReward = new StepReward(stepAmount);
         rewards.Add(stepQuestReward);
         return this;
     }
@@ -129,6 +145,12 @@ public class Quest
 
     internal void GiveCompletionRewards()
     {
+        IEnumerable<RecieveItemGoal> recieveItemGoals = goals.OfType<RecieveItemGoal>().Where(g => g.consumeItemOnCompletion);
+        foreach (RecieveItemGoal goal in recieveItemGoals)
+        {
+            TextRPG.instance.player.inventory.RemoveItem(goal.desiredItem, goal.desiredItemAmount);
+        }
+
         RPGWriter.Green("You recieve the following quest rewards:");
         rewards.ForEach(r => r.Grant());
         RPGWriter.LineBreak();

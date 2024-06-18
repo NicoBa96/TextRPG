@@ -1,7 +1,7 @@
-public class StepFactorQuestReward : IQuestReward
+public class StepFactorReward : IReward
 {
     float stepFactorAmount;
-    public StepFactorQuestReward(float stepFactorAmount)
+    public StepFactorReward(float stepFactorAmount)
     {
      this.stepFactorAmount = stepFactorAmount;
     }

@@ -1,6 +1,6 @@
 public class Location
 {
-    
+
     public string name;
 
     public string description;
@@ -8,7 +8,7 @@ public class Location
     public int xPos;
     public int yPos;
 
-    public List<AGameEvent> locationEvents;
+    public List<GameEvent> locationEvents;
 
     public Location(int xPos, int yPos, ConsoleColor color, string name, string description)
     {
@@ -18,15 +18,19 @@ public class Location
         this.yPos = yPos;
         this.color = color;
 
-        locationEvents = new List<AGameEvent>();
+        locationEvents = new List<GameEvent>();
     }
 
 
-    public void AddEvent(AGameEvent e)
+    public GameEvent NewEvent()
     {
-        locationEvents.Add(e);
+        GameEvent gameEvent = new GameEvent();
+        locationEvents.Add(gameEvent);
+        return gameEvent;
     }
 
- 
-
+    public void AddEvent(GameEvent gameEvent)
+    {
+      locationEvents.Add(gameEvent);
+    }
 }

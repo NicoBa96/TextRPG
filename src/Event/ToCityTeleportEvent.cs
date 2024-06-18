@@ -1,4 +1,4 @@
-public class ToCityTeleportEvent : AGameEvent
+public class ToCityTeleportEvent : GameEvent
 {
 
     public ToCityTeleportEvent() : base()

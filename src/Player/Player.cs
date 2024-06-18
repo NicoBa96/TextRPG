@@ -154,18 +154,20 @@ public class Player
     return stamina;
   }
 
-  public void Exhaust(int exhAmount)
+  public void ChangeStamina(int delta)
   {
-    stamina -= exhAmount;
-    RPGWriter.Decrease($"{exhAmount} stamina");
-    UpdateStaminaAmountGoal(exhAmount);
-  }
-
-  public void Replenish(int repAmount)
-  {
-    stamina += repAmount;
-    RPGWriter.Gain($"{repAmount} stamina");
-    UpdateStaminaAmountGoal(repAmount);
+    if (delta > 0)
+    {
+      stamina += delta;
+      RPGWriter.Gain($"{delta} stamina");
+      UpdateStaminaAmountGoal(delta);
+    }
+    else if (delta < 0)
+    {
+      stamina -= delta;
+      RPGWriter.Decrease($"{delta} stamina");
+      UpdateStaminaAmountGoal(delta);
+    }
   }
 
   public bool IsDead()

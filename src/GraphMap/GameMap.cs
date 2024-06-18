@@ -80,26 +80,48 @@ public class GameMap
 
     public void AssignAllEvents()
     {
-        Locations.forest.AddEvent(new MarathonEvent()
-                                   .AddCondition(new ByChanceEventCondition(0.25f)));
+        Locations.forest.NewEvent()
+                                  .AddText("You are participating at the 10km marathon!")
+                                  .OnChance(0.25f)
+                                  .GrantSteps(10000);
 
-        Locations.desert.AddEvent(new DesertDamageEvent());
+        Locations.desert.NewEvent()
+                                  .AddText("The heat is too much for you.")
+                                  .GrantStamina(-5);
 
-        var runningBootsEvent = new RunningBootsEvent()
-                                 .AddCondition(new ByChanceEventCondition(0.5f))
-                                 .AddCondition(new StepCountEventCondition(500));
+
+        var runningBootsEvent = new GameEvent()
+                                 .AddText("You find a small shoe store")
+                                 .AddText("Upon hearing about your plans of becoming the biggest stepper, the shop owner offers you a free shoe upgrade.")
+                                 .AddText("As every step takes less effort now, you can make more steps on the same distance.")
+                                 .OnChance(0.5f)
+                                 .OnStepCount(500);
         Locations.cityCentre.AddEvent(runningBootsEvent);
         Locations.cityOutskirts.AddEvent(runningBootsEvent);
 
-        var toCityTeleportEvent = new ToCityTeleportEvent()
-                                        .AddCondition(new MilestoneCompletionEventCondition(Milestone.EVERYTHING_REVEALED, Milestone.FIRST_MAP_USAGE))
-                                        .AddCondition(new StepFactorEventCondition(1.5f));
+        var toCityTeleportEvent = new GameEvent()
+                                                .AddText("You suddenly feel strange magic surrounding you")
+                                                .AddText("IN the next momnent, you realize that you have been sent back to the city in an instant.")
+                                                .AddText("You are now at: City Centre")
+                                                .OnMilestoneCompletion(Milestone.EVERYTHING_REVEALED, Milestone.FIRST_MAP_USAGE)
+                                                .OnStepFactor(1.5f)
+                                                .GrantLocationSet(Locations.cityCentre);
         Locations.coast.AddEvent(toCityTeleportEvent);
         Locations.mountains.AddEvent(toCityTeleportEvent);
 
-        Locations.mountainTop.AddEvent(new LocationRevealEvent(Locations.coast)
+        Locations.mountainTop.NewEvent()
                                     .AddText("You see a path to a coast in the distance.")
-                                    .OnChance(0.5f));
+                                    .OnChance(0.5f)
+                                    .OnNotRevealed(Locations.coast)
+                                    .GrantLocationReveal(Locations.coast);
+
+
+        Locations.coast.NewEvent()
+                                .AddText("You meet the mayors wife on the beach and she wants you to run an errand for her.")
+                                .OnQuestStatus(QuestIdentifier.DeliverLetterToCoast, QuestStatus.Finished)
+                                .GrantQuestStart(QuestIdentifier.BringTheLetterBack)
+                                .GrantItem(Items.Letter);
+
     }
 
     public List<Trail> GetPaths()

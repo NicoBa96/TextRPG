@@ -32,8 +32,8 @@ public class TextRPG
     {
         player = new Player();
         map.SetCurrentLocation(map.GetStartLocation());
-        player.questMemory.StartQuest(questRegistry.GetQuest(QuestIdentifier.StartQuest));
-        player.questMemory.StartQuest(questRegistry.GetQuest(QuestIdentifier.DeliverLetterToCoast));
+        player.questMemory.StartQuest(QuestIdentifier.StartQuest);
+        player.questMemory.StartQuest(QuestIdentifier.DeliverLetterToCoast);
         player.AddItemToInventory(Items.Letter);
         SavegameManager.SaveGame();
         return true;
@@ -54,7 +54,7 @@ public class TextRPG
 
     public void HandleEvent(Location location)
     {
-        foreach (AGameEvent e in location.locationEvents)
+        foreach (GameEvent e in location.locationEvents)
         {
             if (e.AllConditionsFullfilled())
             {

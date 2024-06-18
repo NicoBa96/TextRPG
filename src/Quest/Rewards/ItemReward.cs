@@ -1,8 +1,8 @@
-public class ItemQuestReward : IQuestReward
+public class ItemReward : IReward
 {
     AItem item;
     int itemAmount;
-    public ItemQuestReward(AItem item, int itemAmount)
+    public ItemReward(AItem item, int itemAmount)
     {
         this.item = item;
         this.itemAmount = itemAmount;
